@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshDrinks - Xác Nhận Thanh Toán</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .checkout-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .checkout-item:last-child { border-bottom: none; }
+    .checkout-item-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .checkout-item-details { flex: 1; }
+    .checkout-item-name { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .checkout-item-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .checkout-item-price { font-size: 14px; font-weight: 700; color: #b45309; }
+    .checkout-item-qty { font-size: 13px; color: #64748b; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <!-- TẦNG 1: THANH ĐIỀU HƯỚNG MÀN HÌNH -->
+  <div class="demo-top-bar">
+    <div class="demo-top-container">
+      <div class="demo-nav-group">
+        <span class="demo-title"><i class="fa-solid fa-layer-group"></i> Chọn màn hình:</span>
+        <a href="index.html" class="demo-btn">Trang chủ</a>
+        <a href="products.html" class="demo-btn">Thực đơn & Lọc</a>
+        <a href="login.html" class="demo-btn">Đăng ký / Đăng nhập</a>
+        <a href="cart.html" class="demo-btn">Giỏ hàng</a>
+        <a href="checkout.html" class="demo-btn active">Thanh toán</a>
+      </div>
+      <a href="admin/index.html" class="demo-admin-btn">
+        <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
+      </a>
+    </div>
+  </div>
+
+  <!-- TẦNG 2: HEADER CHÍNH -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fa-solid fa-mug-hot"></i> FreshDrinks</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="products.html">Sản phẩm</a></li>
+        <li><a id="authNavLink" href="login.html">Tài khoản</a></li>
+      </ul>
+      <a href="cart.html" class="cart-btn">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="sec-title" style="border-left: 4px solid var(--primary); padding-left: 12px;">Xác Nhận & Thanh Toán Đơn Hàng</h1>
+
+    <div class="cart-layout">
+      <!-- CỘT 1: THÔNG TIN GIAO HÀNG -->
+      <div class="form-card">
+        <h3 style="font-size:18px; font-weight:800; margin-bottom:18px; color:#0f172a;">
+          <i class="fa-solid fa-location-dot" style="color:var(--primary-dark);"></i> Thông Tin Nhận Hàng
+        </h3>
+
+        <form id="checkoutForm" onsubmit="processOrder(event)">
+          <div class="field-group" style="margin-bottom:16px;">
+            <label>Họ và tên người nhận (*)</label>
+            <input type="text" id="chkName" placeholder="Ví dụ: Nguyễn Văn An" required autocomplete="off" />
+          </div>
+
+          <div class="field-group" style="margin-bottom:16px;">
+            <label>Số điện thoại liên hệ (*)</label>
+            <input type="tel" id="chkPhone" placeholder="Ví dụ: 0905123456" required autocomplete="off" />
+          </div>
+
+          <div class="field-group" style="margin-bottom:16px;">
+            <label>Địa chỉ giao đồ uống (*)</label>
+            <input type="text" id="chkAddress" placeholder="Số nhà, tên đường, quận/huyện..." required autocomplete="off" />
+          </div>
+
+          <div class="field-group" style="margin-bottom:20px;">
+            <label>Phương thức thanh toán</label>
+            <select id="chkPayment">
+              <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+              <option value="vietqr">Chuyển khoản qua mã VietQR</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-primary btn-full" style="padding:14px; font-size:16px;">
+            <i class="fa-solid fa-check"></i> Xác Nhận Đặt Hàng Ngay
+          </button>
+        </form>
+      </div>
+
+      <!-- CỘT 2: DANH SÁCH MÓN ĐÃ CHỌN -->
+      <div class="summary-box">
+        <h3 style="font-size:18px; font-weight:800; margin-bottom:16px; color:#0f172a;">
+          <i class="fa-solid fa-bag-shopping" style="color:var(--primary-dark);"></i> Món Đã Chọn
+        </h3>
+
+        <div id="checkoutItemList" style="max-height: 380px; overflow-y: auto; padding-right: 6px;"></div>
+
+        <div style="margin-top: 20px; border-top: 2px dashed var(--border); padding-top: 16px;">
+          <div class="sum-line"><span>Tạm tính:</span><span id="subTotalText" style="font-weight:700;">0 đ</span></div>
+          <div class="sum-line"><span>Phí giao hàng:</span><span style="font-weight:700; color:#16a34a;">Miễn phí</span></div>
+          <div class="sum-line total"><span>Tổng thanh toán:</span><span id="totalAmountText">0 đ</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>FreshDrinks Artisan</h3>
+        <p>Chuỗi cà phê & trà trái cây giải khát chất lượng cao mang lại nguồn cảm hứng và năng lượng tích cực[cite: 3].</p>
+      </div>
+      <div class="footer-column">
+        <h3>Liên kết nhanh</h3>
+        <a href="index.html">Trang chủ[cite: 3]</a>
+        <a href="products.html">Thực đơn đồ uống[cite: 3]</a>
+        <a href="cart.html">Giỏ hàng của bạn[cite: 3]</a>
+      </div>
+      <div class="footer-column">
+        <h3>Liên hệ</h3>
+        <p>Hotline: 1900 123 456[cite: 3]</p>
+        <p>Email: contact@freshdrinks.com[cite: 3]</p>
+        <p>Địa chỉ: Hải Châu, TP. Đà Nẵng[cite: 3]</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 FreshDrinks Artisan Coffee & Tea. All rights reserved.[cite: 3]</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function renderCheckoutItems() {
+      const cart = getCart();
+      const listWrap = document.getElementById("checkoutItemList");
+      const subTotalText = document.getElementById("subTotalText");
+      const totalAmountText = document.getElementById("totalAmountText");
+
+      if (!cart || cart.length === 0) {
+        listWrap.innerHTML = `
+          <div style="text-align:center; padding:30px 10px; color:#64748b;">
+            <p>Chưa có món nào trong giỏ để thanh toán!</p>
+            <a href="products.html" class="btn-primary" style="margin-top:14px; font-size:13px;">Chọn món ngay</a>
+          </div>
+        `;
+        subTotalText.textContent = "0 đ";
+        totalAmountText.textContent = "0 đ";
+        return;
+      }
+
+      let total = 0;
+      listWrap.innerHTML = cart.map(item => {
+        const p = item.product;
+        const lineTotal = p.price * item.quantity;
+        total += lineTotal;
+
+        return `
+          <div class="checkout-item">
+            <img class="checkout-item-img" src="${p.image}" alt="${p.name}">
+            <div class="checkout-item-details">
+              <div class="checkout-item-name">${p.name}</div>
+              <div class="checkout-item-desc">${p.desc || ''}</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="checkout-item-price">${Number(p.price).toLocaleString('vi-VN')} đ</span>
+                <span class="checkout-item-qty">x ${item.quantity}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      subTotalText.textContent = total.toLocaleString('vi-VN') + " đ";
+      totalAmountText.textContent = total.toLocaleString('vi-VN') + " đ";
+    }
+
+    async function processOrder(e) {
+      e.preventDefault();
+      const cart = getCart();
+      if (!cart || cart.length === 0) return alert("❌ Giỏ hàng của bạn đang trống!");
+
+      const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+      const total = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
+
+      const newOrder = {
+        id: orderId,
+        customer: document.getElementById('chkName').value.trim(),
+        phone: document.getElementById('chkPhone').value.trim(),
+        address: document.getElementById('chkAddress').value.trim(),
+        date: new Date().toLocaleDateString("vi-VN"),
+        total: total,
+        status: "Đang giao",
+        items: cart.map(i => ({ name: i.product.name, qty: i.quantity, price: i.product.price }))
+      };
+
+      // 1. Gửi POST lưu vào db.json
+      await apiCreateOrder(newOrder);
+
+      // 2. Trừ số lượng tồn kho trong db.json
+      for (const item of cart) {
+        try {
+          const res = await fetch(`http://localhost:3001/products/${item.product.id}`);
+          if (res.ok) {
+            const currentProd = await res.json();
+            currentProd.quantity = Math.max(0, currentProd.quantity - item.quantity);
+            await apiUpdateProduct(currentProd.id, currentProd);
+          }
+        } catch (err) {}
+      }
+
+      // 3. Dọn rỗng giỏ hàng
+      saveCart([]);
+      if (typeof updateCartBadge === "function") updateCartBadge();
+
+      window.location.href = `success.html?orderId=${orderId}&total=${total}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCheckoutItems();
+      const user = JSON.parse(localStorage.getItem("fd_currentUser"));
+      if (user) {
+        if (user.name) document.getElementById("chkName").value = user.name;
+        if (user.phone) document.getElementById("chkPhone").value = user.phone;
+      }
+    });
+  </script>
+</body>
+</html>

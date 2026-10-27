@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Quản Lý Khách Hàng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+  <div class="admin-shell">
+    <!-- SIDEBAR ĐỒNG BỘ -->
+    <aside class="admin-sidebar">
+      <h3><i class="fa-solid fa-mug-hot"></i> FreshDrinks</h3>
+      <ul class="admin-nav">
+        <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="categories.html"><i class="fa-solid fa-tags"></i> Quản lý Danh mục</a></li>
+        <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i> Quản lý Sản phẩm</a></li>
+        <li><a href="users.html" class="active"><i class="fa-solid fa-users"></i> Khách hàng</a></li>
+        <li><a href="orders.html"><i class="fa-solid fa-receipt"></i> Đơn hàng</a></li>
+        <li><a href="seo.html"><i class="fa-solid fa-magnifying-glass-chart"></i> Cấu hình SEO & FB</a></li>
+        <li><a href="../index.html" style="color:#ef4444; margin-top: auto;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Thoát Admin</a></li>
+      </ul>
+    </aside>
+
+    <!-- MAIN PANEL -->
+    <main class="admin-view-panel">
+      <div class="admin-header-title">
+        <h1><i class="fa-solid fa-users" style="color:var(--admin-primary-dark, #d97706);"></i> Danh Sách Khách Hàng Đã Đăng Ký</h1>
+      </div>
+
+      <!-- BẢNG DANH SÁCH KHÁCH HÀNG -->
+      <div class="admin-table-card">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th style="width: 70px;">STT</th>
+              <th>Họ và Tên</th>
+              <th>Email Đăng Ký</th>
+              <th>Số Điện Thoại</th>
+              <th>Vai Trò</th>
+              <th>Số Đơn Đã Đặt</th>
+              <th style="width: 120px;">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="userTbody">
+            <tr>
+              <td colspan="7" style="text-align:center; padding:30px; color:#64748b;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu 
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script>
+    async function renderUsers() {
+      // 1. Lấy danh sách tài khoản và danh sách đơn hàng từ json-server (db.json)
+      let users = [];
+      let orders = [];
+
+      try {
+        users = await apiGetUsers();
+        orders = await apiGetOrders();
+      } catch (err) {
+        console.error("Lỗi lấy dữ liệu từ API:", err);
+      }
+
+      // Dự phòng nếu chưa bật json-server thì đọc trực tiếp từ db.json
+      if (!users || users.length === 0) {
+        try {
+          const res = await fetch("../db.json");
+          const data = await res.json();
+          users = data.users || [];
+          orders = data.orders || [];
+        } catch (e) {}
+      }
+
+      const tbody = document.getElementById('userTbody');
+
+      if (!users || users.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; padding:40px; color:#64748b;">
+              <i class="fa-regular fa-folder-open" style="font-size:32px; margin-bottom:8px; display:block;"></i>
+              Chưa có tài khoản khách hàng nào đăng ký trong db.json!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = users.map((u, index) => {
+        // Tự động đếm số đơn hàng khách này đã đặt theo tên hoặc số điện thoại
+        const userOrdersCount = orders.filter(o => 
+          (o.customer && o.customer.toLowerCase() === (u.name || '').toLowerCase()) ||
+          (o.phone && o.phone === u.phone)
+        ).length;
+
+        return `
+          <tr>
+            <td style="font-weight:700; color:#64748b;">#${index + 1}</td>
+            <td>
+              <div style="font-weight:700; font-size:15px; color:#0f172a;">
+                <i class="fa-regular fa-circle-user" style="color:#d97706; margin-right:6px;"></i>
+                ${u.name || 'Khách vãng lai'}
+              </div>
+            </td>
+            <td>
+              <span style="color:#334155; font-weight:600;">${u.email}</span>
+            </td>
+            <td>${u.phone || 'Chưa cập nhật'}</td>
+            <td>
+              <span style="background:${u.role === 'admin' ? '#fee2e2; color:#b91c1c' : '#f1f5f9; color:#475569'}; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:700;">
+                ${u.role === 'admin' ? 'Quản trị viên' : 'Khách hàng'}
+              </span>
+            </td>
+            <td>
+              <strong style="color:#2563eb;">${userOrdersCount} đơn</strong>
+            </td>
+            <td>
+              <button class="btn-action-del" onclick="deleteUser('${u.id}')" title="Xóa tài khoản này">
+                <i class="fa-solid fa-trash-can"></i> Xóa
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Xóa tài khoản khách hàng trực tiếp khỏi file db.json
+    async function deleteUser(userId) {
+      if (!confirm("Bạn có chắc chắn muốn xóa tài khoản này khỏi db.json?")) return;
+      try {
+        await fetch(`http://localhost:3001/users/${userId}`, { method: "DELETE" });
+        alert("✅ Đã xóa tài khoản thành công khỏi db.json!");
+        await renderUsers();
+      } catch (err) {
+        alert("❌ Lỗi khi xóa tài khoản: " + err.message);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", renderUsers);
+  </script>
+</body>
+</html>

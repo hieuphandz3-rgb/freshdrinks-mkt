@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Cấu Hình SEO & Facebook (WEB2053)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <style>
+    /* ============ LAYOUT ============ */
+    .seo-wrap { max-width: 1020px; }
+
+    /* ============ MODULE OVERVIEW CARDS ============ */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .module-card {
+      background: #fff;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px -6px rgba(0,0,0,0.12);
+      border-color: #d97706;
+    }
+    .module-card.active {
+      border-color: #d97706;
+      background: linear-gradient(135deg, #fffbeb 0%, #ffffff 60%);
+      box-shadow: 0 10px 24px -8px rgba(217,119,6,0.35);
+    }
+    .module-card .m-icon {
+      width: 42px; height: 42px;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .module-card .m-title {
+      font-size: 14px; font-weight: 800; color: #0f172a;
+      line-height: 1.35; margin-bottom: 5px;
+    }
+    .module-card .m-sub {
+      font-size: 12px; color: #64748b; line-height: 1.5;
+    }
+    .module-card .m-status {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 11px; font-weight: 800;
+      padding: 3px 9px; border-radius: 99px;
+    }
+    .m-status.good { background: #dcfce7; color: #15803d; }
+    .m-status.ok   { background: #fef3c7; color: #b45309; }
+    .m-status.bad  { background: #fee2e2; color: #b91c1c; }
+    .m-status.info { background: #dbeafe; color: #1d4ed8; }
+
+    /* ============ TABS ============ */
+    .tab-row {
+      display: flex; gap: 4px;
+      margin-bottom: 22px;
+      border-bottom: 2px solid #e2e8f0;
+      overflow-x: auto;
+    }
+    .tab-row button {
+      padding: 12px 20px;
+      font-size: 14px; font-weight: 700;
+      color: #64748b;
+      background: none; border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer; white-space: nowrap;
+      transition: all 0.2s; margin-bottom: -2px;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .tab-row button:hover { color: #0f172a; background: #f8fafc; }
+    .tab-row button.active { color: #b45309; border-bottom-color: #d97706; background: #fffbeb; }
+
+    .seo-panel { display: none; animation: fadeIn 0.25s ease; }
+    .seo-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* ============ CARDS / FORM ============ */
+    .seo-card-box {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+      margin-bottom: 22px;
+    }
+    .seo-card-box > h3 {
+      font-size: 16px; font-weight: 800; color: #0f172a;
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 12px; border-bottom: 1px solid #f1f5f9;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    .field-group { margin-bottom: 0; }
+    .field-group label {
+      display: block; font-size: 13px; font-weight: 700;
+      color: #334155; margin-bottom: 6px;
+    }
+    .field-group input, .field-group select, .field-group textarea {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid #e2e8f0; border-radius: 8px;
+      font-size: 14px; font-family: inherit;
+      transition: border 0.2s, box-shadow 0.2s;
+      box-sizing: border-box; background: #fff; color: #0f172a;
+    }
+    .field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+      border-color: #d97706; outline: none;
+      box-shadow: 0 0 0 3px rgba(217,119,6,0.12);
+    }
+    .field-group input[readonly] { background: #f1f5f9; color: #475569; cursor: not-allowed; }
+    .field-group textarea { resize: vertical; line-height: 1.6; }
+
+    .char-counter { font-size: 11.5px; color: #94a3b8; margin-top: 5px; text-align: right; font-weight: 600; }
+    .char-counter.warn { color: #f59e0b; }
+    .char-counter.bad { color: #dc2626; }
+    .char-counter.good { color: #16a34a; }
+
+    .hint { font-size: 12px; color: #94a3b8; margin-top: 5px; line-height: 1.5; }
+
+    /* ============ GOOGLE PREVIEW ============ */
+    .google-preview {
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 12px;
+      font-family: Arial, sans-serif;
+      max-width: 620px;
+    }
+    .google-preview .g-url {
+      font-size: 12.5px; color: #4d5156; margin-bottom: 5px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .g-favicon {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #d97706; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; flex-shrink: 0;
+    }
+    .google-preview .g-title {
+      font-size: 19px; color: #1a0dab; font-weight: 400;
+      cursor: pointer; margin-bottom: 4px; line-height: 1.3;
+    }
+    .google-preview .g-title:hover { text-decoration: underline; }
+    .google-preview .g-desc { font-size: 13.5px; color: #4d5156; line-height: 1.58; }
+
+    /* ============ FACEBOOK PREVIEW ============ */
+    .fb-preview {
+      background: #fff;
+      border: 1px solid #dadde1;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 12px;
+      max-width: 500px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .fb-img-wrap {
+      width: 100%; height: 190px;
+      background: #f0f2f5;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .fb-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .fb-img-placeholder { color: #8a8d91; font-size: 13px; text-align: center; }
+    .fb-body { background: #f0f2f5; padding: 10px 14px 12px; border-top: 1px solid #dadde1; }
+    .fb-domain { font-size: 11.5px; color: #65676b; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .fb-title { font-size: 16px; font-weight: 700; color: #050505; margin-bottom: 3px; line-height: 1.3; }
+    .fb-desc { font-size: 14px; color: #65676b; line-height: 1.42; }
+
+    /* ============ SEO SCORE ============ */
+    .score-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .score-head .score-label { font-size: 13px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; }
+    .seo-score-bar {
+      width: 100%; height: 30px;
+      background: #e2e8f0; border-radius: 99px;
+      overflow: hidden; position: relative;
+    }
+    .seo-score-fill {
+      height: 100%; border-radius: 99px;
+      transition: width 0.5s ease, background 0.4s ease;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 12px; font-size: 12px; font-weight: 800; color: #fff;
+      min-width: 52px;
+    }
+    .badge-seo {
+      display: inline-block; padding: 5px 12px;
+      border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap;
+    }
+    .badge-seo.good { background: #dcfce7; color: #15803d; }
+    .badge-seo.ok   { background: #fef3c7; color: #b45309; }
+    .badge-seo.bad  { background: #fee2e2; color: #b91c1c; }
+
+    .seo-check-list { list-style: none; padding: 0; margin: 14px 0 0; }
+    .seo-check-list li {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 7px 0; font-size: 13.5px; color: #334155;
+      line-height: 1.45;
+    }
+    .check-icon {
+      width: 19px; height: 19px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; flex-shrink: 0; margin-top: 1px;
+    }
+    .seo-check-list li.pass .check-icon { background: #dcfce7; color: #16a34a; }
+    .seo-check-list li.fail .check-icon { background: #fee2e2; color: #dc2626; }
+    .pts { color: #cbd5e1; font-size: 11.5px; font-weight: 700; margin-left: auto; padding-left: 8px; }
+
+    /* ============ BUTTONS ============ */
+    .btn-primary {
+      background: #d97706; color: #fff; border: none;
+      padding: 12px 22px; border-radius: 10px;
+      font-weight: 700; font-size: 14px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: 0.2s;
+    }
+    .btn-primary:hover { background: #b45309; transform: translateY(-1px); }
+    .btn-outline {
+      background: #fff; color: #d97706; border: 1.5px solid #d97706;
+      padding: 12px 20px; border-radius: 10px;
+      font-weight: 700; font-size: 14px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: 0.2s;
+    }
+    .btn-outline:hover { background: #fffbeb; }
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+
+    /* ============ CODE BLOCK ============ */
+    pre.code-block {
+      background: #0f172a; color: #e2e8f0;
+      padding: 16px; border-radius: 10px;
+      font-size: 12px; line-height: 1.65;
+      overflow-x: auto; margin: 0;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+
+    /* ============ SAVE BAR ============ */
+    .save-bar {
+      position: sticky; bottom: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid #e2e8f0;
+      padding: 14px 0; margin-top: 8px;
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      z-index: 50;
+    }
+    .save-note { font-size: 12.5px; color: #64748b; }
+
+    /* ============ SECTION DIVIDER ============ */
+    .sec-divider {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; font-weight: 800; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      margin: 22px 0 12px;
+    }
+    .sec-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+
+    @media(max-width: 860px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .seo-card-box { padding: 16px; }
+      .admin-view-panel { padding: 18px !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h3><i class="fa-solid fa-mug-hot"></i> FreshDrinks</h3>
+      <ul class="admin-nav">
+        <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="categories.html"><i class="fa-solid fa-tags"></i> Quản lý Danh mục</a></li>
+        <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i> Quản lý Sản phẩm</a></li>
+        <li><a href="users.html"><i class="fa-solid fa-users"></i> Khách hàng</a></li>
+        <li><a href="orders.html"><i class="fa-solid fa-receipt"></i> Đơn hàng</a></li>
+        <li><a href="seo.html" class="active"><i class="fa-solid fa-magnifying-glass-chart"></i> Cấu hình SEO & FB</a></li>
+        <li><a href="../index.html" style="color:#ef4444; margin-top: auto;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Thoát Admin</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-view-panel seo-wrap">
+      <div class="admin-header-title">
+        <h1><i class="fa-solid fa-sliders" style="color:var(--admin-primary-dark, #d97706);"></i> Cấu Hình SEO & Facebook (Mục 2 - ASM)</h1>
+        <p style="color:#64748b; font-size:13.5px; margin-top:6px;">
+          Quản lý 4 nhóm cấu hình: Tối ưu SEO hệ thống · SEO sản phẩm · SEO bài viết · Chức năng Facebook
+        </p>
+      </div>
+
+      <!-- ============ 4 MODULE OVERVIEW ============ -->
+      <div class="module-grid">
+        <div class="module-card" id="modCard-site" onclick="openModule('site')">
+          <div class="m-icon" style="background:#dbeafe; color:#2563eb;"><i class="fa-solid fa-globe"></i></div>
+          <div class="m-title">Tối Ưu SEO Hệ Thống</div>
+          <div class="m-sub">Meta title, description, robots, sitemap, Google Search Console</div>
+          <span class="m-status info" id="modStatus-site">Đang mở</span>
+        </div>
+
+        <div class="module-card" id="modCard-product" onclick="openModule('product')">
+          <div class="m-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-mug-saucer"></i></div>
+          <div class="m-title">Cấu Hình SEO Sản Phẩm</div>
+          <div class="m-sub">Meta riêng cho từng món, slug chuẩn SEO, schema Product</div>
+          <span class="m-status bad" id="modStatus-product">0/100</span>
+        </div>
+
+        <div class="module-card" id="modCard-article" onclick="openModule('article')">
+          <div class="m-icon" style="background:#fef3c7; color:#b45309;"><i class="fa-solid fa-file-pen"></i></div>
+          <div class="m-title">Cấu Hình SEO Bài Viết</div>
+          <div class="m-sub">Meta cho blog, tác giả, tags, schema Article</div>
+          <span class="m-status bad" id="modStatus-article">0/100</span>
+        </div>
+
+        <div class="module-card" id="modCard-facebook" onclick="openModule('facebook')">
+          <div class="m-icon" style="background:#dbeafe; color:#1877f2;"><i class="fa-brands fa-facebook"></i></div>
+          <div class="m-title">Chức Năng Facebook</div>
+          <div class="m-sub">Open Graph, Facebook Pixel, Fanpage, share preview</div>
+          <span class="m-status info" id="modStatus-facebook">Chưa kiểm tra</span>
+        </div>
+      </div>
+
+      <!-- ============ TABS ============ -->
+      <div class="tab-row">
+        <button class="active" data-tab="site" onclick="openModule('site')"><i class="fa-solid fa-globe"></i> 1. SEO Hệ Thống</button>
+        <button data-tab="product" onclick="openModule('product')"><i class="fa-solid fa-mug-saucer"></i> 2. SEO Sản Phẩm</button>
+        <button data-tab="article" onclick="openModule('article')"><i class="fa-solid fa-file-pen"></i> 3. SEO Bài Viết</button>
+        <button data-tab="facebook" onclick="openModule('facebook')"><i class="fa-brands fa-facebook"></i> 4. Facebook</button>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- MODULE 1: TỐI ƯU SEO HỆ THỐNG                                  -->
+      <!-- ============================================================= -->
+      <div id="panel-site" class="seo-panel active">
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-globe" style="color:#2563eb;"></i> 1. Tối Ưu SEO Hệ Thống & Google Search Console</h3>
+
+          <div class="grid-2">
+            <div class="field-group">
+              <label>Tiêu đề Trang chủ (Meta Title) <span style="color:#dc2626;">*</span></label>
+              <input id="siteTitle" maxlength="70" oninput="onSiteInput()" value="FreshDrinks - Cà Phê Pha Máy &amp; Trà Trái Cây Đậm Gu">
+              <div class="char-counter" id="siteTitleCount">0/70</div>
+            </div>
+            <div class="field-group">
+              <label>Mã xác minh Google Search Console</label>
+              <input id="siteGSC" value="google-site-verification=Abc123XyZ456FreshDrinksToken2026" oninput="onSiteInput()">
+              <div class="hint">Dán giá trị trong thẻ &lt;meta name="google-site-verification"&gt;</div>
+            </div>
+          </div>
+
+          <div class="field-group" style="margin-top:16px;">
+            <label>Mô tả Meta Description hệ thống <span style="color:#dc2626;">*</span></label>
+            <textarea id="siteDesc" rows="3" maxlength="160" oninput="onSiteInput()">Thưởng thức cà phê rang mộc nguyên chất, trà đào cam sả và các loại đồ uống thanh mát tại FreshDrinks. Đặt hàng online giao nhanh 20 phút.</textarea>
+            <div class="char-counter" id="siteDescCount">0/160</div>
+          </div>
+
+          <div class="grid-2" style="margin-top:16px;">
+            <div class="field-group">
+              <label>Từ khóa chính toàn hệ thống (Focus Keyword)</label>
+              <input id="siteKeyword" oninput="onSiteInput()" value="cà phê rang mộc">
+            </div>
+            <div class="field-group">
+              <label>Chính sách Robots (robots.txt)</label>
+              <select id="siteRobots" onchange="onSiteInput()">
+                <option value="index, follow">index, follow — Cho Google lập chỉ mục (khuyên dùng)</option>
+                <option value="noindex, nofollow">noindex, nofollow — Chặn hoàn toàn</option>
+                <option value="index, nofollow">index, nofollow</option>
+                <option value="noindex, follow">noindex, follow</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:16px;">
+            <div class="field-group">
+              <label>Đường dẫn Sitemap XML</label>
+              <input value="https://freshdrinks.vn/sitemap_index.xml" readonly>
+            </div>
+            <div class="field-group">
+              <label>Canonical URL gốc</label>
+              <input id="siteCanonical" value="https://freshdrinks.vn/" oninput="onSiteInput()">
+            </div>
+          </div>
+
+          <div class="sec-divider">Xem trước kết quả tìm kiếm Google</div>
+          <div class="google-preview">
+            <div class="g-url">
+              <div class="g-favicon">F</div>
+              <div id="sitePrevUrl" style="color:#202124; font-size:13px;">https://freshdrinks.vn</div>
+            </div>
+            <div class="g-title" id="sitePrevTitle">—</div>
+            <div class="g-desc" id="sitePrevDesc">—</div>
+          </div>
+
+          <div class="sec-divider">Điểm SEO hệ thống</div>
+          <div class="score-head">
+            <span class="score-label"><i class="fa-solid fa-chart-line"></i> Đánh giá tổng thể</span>
+            <span class="badge-seo bad" id="siteBadge">0/100</span>
+          </div>
+          <div class="seo-score-bar"><div class="seo-score-fill" id="siteFill" style="width:0%; background:#dc2626;">0</div></div>
+          <ul class="seo-check-list" id="siteChecks"></ul>
+        </div>
+
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-code" style="color:#64748b;"></i> Mã thẻ Meta sinh ra (dán vào &lt;head&gt; của trang chủ)</h3>
+          <pre class="code-block" id="siteMetaCode"></pre>
+        </div>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- MODULE 2: CẤU HÌNH SEO SẢN PHẨM                                -->
+      <!-- ============================================================= -->
+      <div id="panel-product" class="seo-panel">
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-mug-saucer" style="color:#16a34a;"></i> 2. Cấu Hình SEO Theo Từng Sản Phẩm</h3>
+
+          <div class="grid-2">
+            <div class="field-group">
+              <label>Chọn sản phẩm cần tối ưu SEO</label>
+              <select id="prodSelect" onchange="loadProductSEO()">
+                <option value="">— Đang tải danh sách sản phẩm... —</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Danh mục / Giá bán (tự động)</label>
+              <input id="prodMetaInfo" readonly placeholder="Chọn sản phẩm để xem thông tin">
+            </div>
+          </div>
+
+          <div class="sec-divider">Thẻ Meta cơ bản</div>
+
+          <div class="field-group">
+            <label>Meta Title <span style="color:#dc2626;">*</span></label>
+            <input id="prodTitle" maxlength="70" oninput="onProductInput()" placeholder="VD: Trà Đào Cam Sả Tươi Mát | FreshDrinks Giao Nhanh 20 Phút">
+            <div class="char-counter" id="prodTitleCount">0/70</div>
+          </div>
+
+          <div class="field-group" style="margin-top:14px;">
+            <label>Meta Description <span style="color:#dc2626;">*</span></label>
+            <textarea id="prodDesc" rows="3" maxlength="160" oninput="onProductInput()" placeholder="Mô tả 120–160 ký tự, chứa từ khóa chính..."></textarea>
+            <div class="char-counter" id="prodDescCount">0/160</div>
+          </div>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="field-group">
+              <label>Từ khóa chính (Focus Keyword)</label>
+              <input id="prodKeyword" oninput="onProductInput()" placeholder="VD: trà đào cam sả">
+            </div>
+            <div class="field-group">
+              <label>Canonical Slug (đường dẫn tĩnh)</label>
+              <input id="prodSlug" oninput="onProductInput()" placeholder="/san-pham/tra-dao-cam-sa">
+              <div class="hint">Chỉ dùng chữ thường không dấu, phân cách bằng dấu gạch ngang</div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="field-group">
+              <label>Ảnh đại diện SEO (og:image)</label>
+              <input id="prodImage" oninput="onProductInput()" placeholder="https://...">
+            </div>
+            <div class="field-group">
+              <label>Schema Markup (JSON-LD)</label>
+              <select id="prodSchema" onchange="onProductInput()">
+                <option value="Product">Product — Sản phẩm</option>
+                <option value="MenuItem">MenuItem — Món trong menu</option>
+                <option value="FoodEstablishment">FoodEstablishment — Cửa hàng F&amp;B</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sec-divider">Điểm SEO On-page (tiêu chuẩn Rank Math)</div>
+          <div class="score-head">
+            <span class="score-label"><i class="fa-solid fa-chart-line"></i> Đánh giá sản phẩm đang chọn</span>
+            <span class="badge-seo bad" id="prodBadge">0/100</span>
+          </div>
+          <div class="seo-score-bar"><div class="seo-score-fill" id="prodFill" style="width:0%; background:#dc2626;">0</div></div>
+          <ul class="seo-check-list" id="prodChecks"></ul>
+
+          <div class="sec-divider">Xem trước hiển thị</div>
+          <div class="grid-2" style="align-items:start;">
+            <div>
+              <label style="font-size:13px; font-weight:700; color:#334155; display:block; margin-bottom:2px;">
+                <i class="fa-brands fa-google" style="color:#4285f4;"></i> Google
+              </label>
+              <div class="google-preview">
+                <div class="g-url">
+                  <div class="g-favicon">F</div>
+                  <div>
+                    <div style="color:#202124; font-size:13px;">FreshDrinks</div>
+                    <div id="prodPrevUrl" style="font-size:12.5px;">https://freshdrinks.vn › san-pham</div>
+                  </div>
+                </div>
+                <div class="g-title" id="prodPrevTitle">—</div>
+                <div class="g-desc" id="prodPrevDesc">—</div>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:13px; font-weight:700; color:#334155; display:block; margin-bottom:2px;">
+                <i class="fa-brands fa-facebook" style="color:#1877f2;"></i> Facebook
+              </label>
+              <div class="fb-preview">
+                <div class="fb-img-wrap" id="prodFbImg"><span class="fb-img-placeholder">Chưa có ảnh</span></div>
+                <div class="fb-body">
+                  <div class="fb-domain">FRESHDRINKS.VN</div>
+                  <div class="fb-title" id="prodFbTitle">—</div>
+                  <div class="fb-desc" id="prodFbDesc">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="saveProductSEO()"><i class="fa-solid fa-floppy-disk"></i> Lưu SEO Sản Phẩm</button>
+            <button class="btn-outline" onclick="autoProductSEO()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tự Động Sinh SEO</button>
+          </div>
+        </div>
+
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-code" style="color:#64748b;"></i> Mã thẻ Meta + Schema sinh ra cho sản phẩm</h3>
+          <pre class="code-block" id="prodMetaCode"></pre>
+        </div>
+
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-table-list" style="color:#64748b;"></i> Tổng quan SEO toàn bộ sản phẩm</h3>
+          <div class="admin-table-card" style="border:none; box-shadow:none;">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th style="width:110px;">Meta Title</th>
+                  <th style="width:120px;">Meta Desc</th>
+                  <th style="width:90px;">Điểm SEO</th>
+                  <th style="width:90px;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="prodOverviewBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- MODULE 3: CẤU HÌNH SEO BÀI VIẾT                                -->
+      <!-- ============================================================= -->
+      <div id="panel-article" class="seo-panel">
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-file-pen" style="color:#b45309;"></i> 3. Cấu Hình SEO Theo Từng Bài Viết (Blog)</h3>
+
+          <div class="grid-2">
+            <div class="field-group">
+              <label>Chọn bài viết cần tối ưu SEO</label>
+              <select id="artSelect" onchange="loadArticleSEO()">
+                <option value="">— Đang tải danh sách bài viết... —</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Thông tin bài viết (tự động)</label>
+              <input id="artMetaInfo" readonly placeholder="Chọn bài viết để xem thông tin">
+            </div>
+          </div>
+
+          <div class="sec-divider">Thẻ Meta cơ bản</div>
+
+          <div class="field-group">
+            <label>Meta Title bài viết <span style="color:#dc2626;">*</span></label>
+            <input id="artTitle" maxlength="70" oninput="onArticleInput()" placeholder="VD: Bí Quyết Pha Cold Brew Tại Nhà Chuẩn Vị Quán">
+            <div class="char-counter" id="artTitleCount">0/70</div>
+          </div>
+
+          <div class="field-group" style="margin-top:14px;">
+            <label>Meta Description bài viết <span style="color:#dc2626;">*</span></label>
+            <textarea id="artDesc" rows="3" maxlength="160" oninput="onArticleInput()" placeholder="Tóm tắt nội dung 120–160 ký tự, chứa từ khóa chính..."></textarea>
+            <div class="char-counter" id="artDescCount">0/160</div>
+          </div>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="field-group">
+              <label>Từ khóa chính (Focus Keyword)</label>
+              <input id="artKeyword" oninput="onArticleInput()" placeholder="VD: cách pha cold brew">
+            </div>
+            <div class="field-group">
+              <label>Canonical Slug (đường dẫn bài viết)</label>
+              <input id="artSlug" oninput="onArticleInput()" placeholder="/blog/cach-pha-cold-brew">
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top:14px;">
+            <div class="field-group">
+              <label>Tác giả (Author)</label>
+              <input id="artAuthor" oninput="onArticleInput()" placeholder="VD: Nguyễn Minh Khoa">
+            </div>
+            <div class="field-group">
+              <label>Danh mục bài viết</label>
+              <input id="artCategory" oninput="onArticleInput()" placeholder="VD: Cà phê">
+            </div>
+            <div class="field-group">
+              <label>Trạng thái xuất bản</label>
+              <select id="artStatus" onchange="onArticleInput()">
+                <option value="published">Đã xuất bản (published)</option>
+                <option value="draft">Bản nháp (draft)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="field-group">
+              <label>Tags / Từ khóa phụ (phân cách bằng dấu phẩy)</label>
+              <input id="artTags" oninput="onArticleInput()" placeholder="VD: cold brew, cà phê ủ lạnh, pha chế">
+            </div>
+            <div class="field-group">
+              <label>Schema Markup (JSON-LD)</label>
+              <select id="artSchema" onchange="onArticleInput()">
+                <option value="BlogPosting">BlogPosting — Bài blog</option>
+                <option value="Article">Article — Bài viết</option>
+                <option value="NewsArticle">NewsArticle — Tin tức</option>
+                <option value="HowTo">HowTo — Hướng dẫn</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group" style="margin-top:14px;">
+            <label>Ảnh đại diện bài viết (og:image)</label>
+            <input id="artImage" oninput="onArticleInput()" placeholder="https://...">
+          </div>
+
+          <div class="sec-divider">Điểm SEO On-page bài viết</div>
+          <div class="score-head">
+            <span class="score-label"><i class="fa-solid fa-chart-line"></i> Đánh giá bài viết đang chọn</span>
+            <span class="badge-seo bad" id="artBadge">0/100</span>
+          </div>
+          <div class="seo-score-bar"><div class="seo-score-fill" id="artFill" style="width:0%; background:#dc2626;">0</div></div>
+          <ul class="seo-check-list" id="artChecks"></ul>
+
+          <div class="sec-divider">Xem trước hiển thị</div>
+          <div class="grid-2" style="align-items:start;">
+            <div>
+              <label style="font-size:13px; font-weight:700; color:#334155; display:block; margin-bottom:2px;">
+                <i class="fa-brands fa-google" style="color:#4285f4;"></i> Google
+              </label>
+              <div class="google-preview">
+                <div class="g-url">
+                  <div class="g-favicon">F</div>
+                  <div>
+                    <div style="color:#202124; font-size:13px;">FreshDrinks › Blog</div>
+                    <div id="artPrevUrl" style="font-size:12.5px;">https://freshdrinks.vn › blog</div>
+                  </div>
+                </div>
+                <div class="g-title" id="artPrevTitle">—</div>
+                <div class="g-desc" id="artPrevDesc">—</div>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:13px; font-weight:700; color:#334155; display:block; margin-bottom:2px;">
+                <i class="fa-brands fa-facebook" style="color:#1877f2;"></i> Facebook
+              </label>
+              <div class="fb-preview">
+                <div class="fb-img-wrap" id="artFbImg"><span class="fb-img-placeholder">Chưa có ảnh</span></div>
+                <div class="fb-body">
+                  <div class="fb-domain">FRESHDRINKS.VN</div>
+                  <div class="fb-title" id="artFbTitle">—</div>
+                  <div class="fb-desc" id="artFbDesc">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="saveArticleSEO()"><i class="fa-solid fa-floppy-disk"></i> Lưu SEO Bài Viết</button>
+            <button class="btn-outline" onclick="autoArticleSEO()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tự Động Sinh SEO</button>
+          </div>
+        </div>
+
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-code" style="color:#64748b;"></i> Mã thẻ Meta + Schema sinh ra cho bài viết</h3>
+          <pre class="code-block" id="artMetaCode"></pre>
+        </div>
+
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-table-list" style="color:#64748b;"></i> Tổng quan SEO toàn bộ bài viết</h3>
+          <div class="admin-table-card" style="border:none; box-shadow:none;">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Bài viết</th>
+                  <th style="width:100px;">Danh mục</th>
+                  <th style="width:100px;">Trạng thái</th>
+                  <th style="width:90px;">Điểm SEO</th>
+                  <th style="width:90px;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="artOverviewBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- MODULE 4: CẤU HÌNH CHỨC NĂNG FACEBOOK                          -->
+      <!-- ============================================================= -->
+      <div id="panel-facebook" class="seo-panel">
+        <div class="seo-card-box">
+          <h3><i class="fa-brands fa-facebook" style="color:#1877f2;"></i> 4. Cấu Hình Các Chức Năng Của Facebook Phần Hệ Thống</h3>
+
+          <div class="sec-divider">Facebook Pixel &amp; Theo dõi chuyển đổi</div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label>Facebook Pixel ID <span style="color:#dc2626;">*</span></label>
+              <input id="fbPixelId" value="684920491823901" oninput="onFacebookInput()">
+              <div class="hint">Dùng để theo dõi chiến dịch quảng cáo, đo lường chuyển đổi</div>
+            </div>
+            <div class="field-group">
+              <label>Facebook Conversions API Token (nâng cao)</label>
+              <input id="fbCapiToken" placeholder="EAAxxxxxxx... (để trống nếu không dùng)" oninput="onFacebookInput()">
+              <div class="hint">Gửi sự kiện server-side, giảm thất thoát dữ liệu do chặn cookie</div>
+            </div>
+          </div>
+
+          <div class="sec-divider">Sự kiện Pixel tự động theo dõi</div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label style="font-weight:600; font-size:13.5px;"><input type="checkbox" id="fbEvPageView" checked style="width:auto; margin-right:8px; vertical-align:middle;" onchange="onFacebookInput()"> PageView — Lượt xem trang</label>
+            </div>
+            <div class="field-group">
+              <label style="font-weight:600; font-size:13.5px;"><input type="checkbox" id="fbEvViewContent" checked style="width:auto; margin-right:8px; vertical-align:middle;" onchange="onFacebookInput()"> ViewContent — Xem chi tiết sản phẩm</label>
+            </div>
+            <div class="field-group">
+              <label style="font-weight:600; font-size:13.5px;"><input type="checkbox" id="fbEvAddToCart" checked style="width:auto; margin-right:8px; vertical-align:middle;" onchange="onFacebookInput()"> AddToCart — Thêm vào giỏ hàng</label>
+            </div>
+            <div class="field-group">
+              <label style="font-weight:600; font-size:13.5px;"><input type="checkbox" id="fbEvInitCheckout" checked style="width:auto; margin-right:8px; vertical-align:middle;" onchange="onFacebookInput()"> InitiateCheckout — Bắt đầu thanh toán</label>
+            </div>
+            <div class="field-group">
+              <label style="font-weight:600; font-size:13.5px;"><input type="checkbox" id="fbEvPurchase" checked style="width:auto; margin-right:8px; vertical-align:middle;" onchange="onFacebookInput()"> Purchase — Đặt hàng thành công</label>
+            </div>
+            <div class="field-group">
+              <label style="font-weight:600; font-size:13.5px;"><input type="checkbox" id="fbEvSearch" style="width:auto; margin-right:8px; vertical-align:middle;" onchange="onFacebookInput()"> Search — Tìm kiếm sản phẩm</label>
+            </div>
+          </div>
+
+          <div class="sec-divider">Open Graph (Thẻ chia sẻ mạng xã hội)</div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label>Tiêu đề chia sẻ (og:title)</label>
+              <input id="fbOgTitle" value="Menu Đồ Uống Mùa Hè Cực Đã - FreshDrinks" oninput="onFacebookInput()">
+            </div>
+            <div class="field-group">
+              <label>Loại Open Graph (og:type)</label>
+              <select id="fbOgType" onchange="onFacebookInput()">
+                <option value="website">website — Trang web</option>
+                <option value="product">product — Sản phẩm</option>
+                <option value="article">article — Bài viết</option>
+                <option value="restaurant">restaurant — Nhà hàng</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group" style="margin-top:14px;">
+            <label>Mô tả chia sẻ (og:description)</label>
+            <textarea id="fbOgDesc" rows="2" oninput="onFacebookInput()">Đặt đồ uống online giao tận nơi trong 20 phút. Cà phê rang mộc, trà trái cây tươi mát - Đậm gu FreshDrinks!</textarea>
+          </div>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="field-group">
+              <label>Ảnh chia sẻ (og:image)</label>
+              <input id="fbOgImage" value="https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=1200&q=80" oninput="onFacebookInput()">
+            </div>
+            <div class="field-group">
+              <label>URL trang đích (og:url)</label>
+              <input id="fbOgUrl" value="https://freshdrinks.vn/" oninput="onFacebookInput()">
+            </div>
+          </div>
+
+          <div class="sec-divider">Fanpage &amp; Kênh liên kết</div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label>Facebook Fanpage URL</label>
+              <input id="fbFanpage" value="https://facebook.com/freshdrinks.vietnam" oninput="onFacebookInput()">
+            </div>
+            <div class="field-group">
+              <label>Facebook App ID (nếu dùng đăng nhập FB)</label>
+              <input id="fbAppId" placeholder="VD: 1234567890123456" oninput="onFacebookInput()">
+            </div>
+          </div>
+
+          <div class="sec-divider">Xem trước thẻ chia sẻ Facebook</div>
+          <div class="fb-preview">
+            <div class="fb-img-wrap" id="fbMainImg"><span class="fb-img-placeholder">Chưa có ảnh</span></div>
+            <div class="fb-body">
+              <div class="fb-domain" id="fbMainDomain">FRESHDRINKS.VN</div>
+              <div class="fb-title" id="fbMainTitle">—</div>
+              <div class="fb-desc" id="fbMainDesc">—</div>
+            </div>
+          </div>
+
+          <div class="sec-divider">Kiểm tra cấu hình Facebook</div>
+          <div class="score-head">
+            <span class="score-label"><i class="fa-solid fa-shield-halved"></i> Mức độ hoàn thiện</span>
+            <span class="badge-seo bad" id="fbBadge">0/100</span>
+          </div>
+          <div class="seo-score-bar"><div class="seo-score-fill" id="fbFill" style="width:0%; background:#dc2626;">0</div></div>
+          <ul class="seo-check-list" id="fbChecks"></ul>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="saveFacebook()"><i class="fa-solid fa-floppy-disk"></i> Lưu Cấu Hình Facebook</button>
+          </div>
+        </div>
+
+        <div class="seo-card-box">
+          <h3><i class="fa-solid fa-code" style="color:#64748b;"></i> Mã Facebook Pixel + Open Graph sinh ra (dán vào &lt;head&gt;)</h3>
+          <pre class="code-block" id="fbCode"></pre>
+        </div>
+      </div>
+
+      <!-- ============ SAVE BAR ============ -->
+      <div class="save-bar">
+        <button class="btn-primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Lưu Tất Cả Cấu Hình</button>
+        <button class="btn-outline" onclick="exportConfig()"><i class="fa-solid fa-file-export"></i> Xuất JSON</button>
+        <span class="save-note" id="saveNote"><i class="fa-solid fa-circle-info"></i> Cấu hình được lưu vào localStorage của trình duyệt</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script>
+    /* =========================================================
+       STATE
+    ========================================================= */
+    let products = [];
+    let categories = [];
+    let articles = [];
+    let cfg = { site: null, products: {}, articles: {}, facebook: null };
+
+    const LS_KEY = "fd_seo_config_v2";
+
+    /* Dữ liệu dự phòng: dùng khi chưa bật json-server VÀ không đọc được db.json
+       (ví dụ mở file trực tiếp bằng file://). Giúp trang luôn có dữ liệu để demo. */
+    const DEMO_CATEGORIES = [
+      { id: "coffee", name: "Cà phê máy" },
+      { id: "tea", name: "Trà & Trái cây" },
+      { id: "iceblend", name: "Đá xay & Sinh tố" }
+    ];
+    const DEMO_PRODUCTS = [
+      { id: "1", name: "Latte Almond Hạnh Nhân", price: 59000, quantity: 35, category: "coffee", image: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=400&q=80", desc: "Espresso nguyên chất hòa quyện cùng sữa hạt hạnh nhân béo ngậy thơm nồng." },
+      { id: "2", name: "Trà Đào Cam Sả", price: 45000, quantity: 60, category: "tea", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80", desc: "Trà đen ủ lạnh thanh mát quyện vị cam vàng tươi và từng lát đào vàng giòn ngọt." },
+      { id: "3", name: "Cà Phê Muối Xứ Huế", price: 39000, quantity: 50, category: "coffee", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=400&q=80", desc: "Cốt cà phê phin đậm đặc hòa cùng lớp kem mặn béo ngậy chuẩn vị cố đô." },
+      { id: "4", name: "Sinh Tố Bơ Hạt Điều", price: 65000, quantity: 23, category: "iceblend", image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400&q=80", desc: "Bơ sáp dẻo quánh xay cùng hạt điều bổ dưỡng mang đến vị bùi béo ngậy tự nhiên." },
+      { id: "5", name: "Matcha Đá Xay Macchiato", price: 59000, quantity: 30, category: "iceblend", image: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=400&q=80", desc: "Bột matcha Uji Nhật Bản nguyên chất xay tuyết phủ lớp kem phô mai béo ngậy mặn mà." }
+    ];
+    const DEMO_ARTICLES = [
+      { id: "art-01", title: "Bí Quyết Pha Chế Cold Brew Tại Nhà Chuẩn Vị Quán", slug: "bi-quyet-pha-che-cold-brew-tai-nha", category: "Cà phê", author: "Nguyễn Minh Khoa", date: "20/10/2026", status: "published", image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=1200&q=80", excerpt: "Cold brew là phương pháp ủ cà phê lạnh suốt 18 giờ giúp giảm vị chua gắt và giữ trọn hương thơm tự nhiên. Cùng học cách pha chuẩn vị ngay tại nhà.", tags: "cold brew, cà phê ủ lạnh, pha chế cà phê" },
+      { id: "art-02", title: "Trà Đào Cam Sả - Thức Uống Giải Nhiệt Được Yêu Thích Nhất Mùa Hè", slug: "tra-dao-cam-sa-thuc-uong-giai-nhiet-mua-he", category: "Trà trái cây", author: "Trần Thị Lan Anh", date: "18/10/2026", status: "published", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=1200&q=80", excerpt: "Sự kết hợp hoàn hảo giữa trà đen Ceylon, đào vàng giòn ngọt, cam tươi và sả thơm tạo nên thức uống giải nhiệt kinh điển của mùa hè Việt Nam.", tags: "trà đào cam sả, trà trái cây, giải nhiệt" },
+      { id: "art-03", title: "Cà Phê Muối Xứ Huế - Hương Vị Cố Đô Trong Từng Ngụm", slug: "ca-phe-muoi-xu-hue-huong-vi-co-do", category: "Cà phê", author: "Nguyễn Minh Khoa", date: "15/10/2026", status: "published", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1200&q=80", excerpt: "Lớp kem mặn béo quyện cùng cốt cà phê phin đậm đặc đã tạo nên cơn sốt cà phê muối lan khắp cả nước. Cùng tìm hiểu nguồn gốc và cách thưởng thức chuẩn nhất.", tags: "cà phê muối, cà phê Huế, đặc sản" }
+    ];
+
+    /* =========================================================
+       BOOT
+    ========================================================= */
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadData();
+      restoreConfig();
+      onSiteInput();
+      onFacebookInput();
+      openModule("site");
+    });
+
+    async function loadData() {
+      try {
+        products = await apiGetProducts();
+        categories = await apiGetCategories();
+      } catch (e) { products = []; categories = []; }
+
+      if (!products || products.length === 0) {
+        try {
+          const r = await fetch("../db.json");
+          const d = await r.json();
+          products = d.products || [];
+          categories = d.categories || [];
+        } catch (e) { console.error("Không tải được db.json", e); }
+      }
+
+      try {
+        articles = await apiGetArticles();
+      } catch (e) { articles = []; }
+
+      if (!articles || articles.length === 0) {
+        try {
+          const r = await fetch("../db.json");
+          const d = await r.json();
+          articles = d.articles || [];
+        } catch (e) {}
+      }
+
+      // Cuối cùng: dùng dữ liệu dự phòng để trang không bao giờ trống
+      if (!products || products.length === 0) {
+        products = DEMO_PRODUCTS;
+        categories = DEMO_CATEGORIES;
+      }
+      if (!articles || articles.length === 0) {
+        articles = DEMO_ARTICLES;
+      }
+
+      const ps = document.getElementById("prodSelect");
+      ps.innerHTML = '<option value="">— Chọn sản phẩm cần tối ưu SEO —</option>' +
+        products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+
+      const as = document.getElementById("artSelect");
+      as.innerHTML = '<option value="">— Chọn bài viết cần tối ưu SEO —</option>' +
+        articles.map(a => `<option value="${a.id}">${a.title}</option>`).join('');
+    }
+
+    /* =========================================================
+       MODULE NAVIGATION
+    ========================================================= */
+    function openModule(name) {
+      document.querySelectorAll(".seo-panel").forEach(p => p.classList.remove("active"));
+      const panel = document.getElementById("panel-" + name);
+      if (panel) panel.classList.add("active");
+
+      document.querySelectorAll(".tab-row button").forEach(b => {
+        b.classList.toggle("active", b.dataset.tab === name);
+      });
+
+      document.querySelectorAll(".module-card").forEach(c => c.classList.remove("active"));
+      const card = document.getElementById("modCard-" + name);
+      if (card) card.classList.add("active");
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    /* =========================================================
+       HELPERS
+    ========================================================= */
+    function setCounter(elId, len, max) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.innerText = `${len}/${max}`;
+      el.className = "char-counter";
+      if (len === 0) return;
+      if (len > max) el.classList.add("bad");
+      else if (len < max * 0.72) el.classList.add("bad");
+      else if (len < max * 0.85) el.classList.add("warn");
+      else el.classList.add("good");
+    }
+
+    function scoreRender(prefix, checks) {
+      const total = checks.reduce((s, c) => s + (c.pass ? c.points : 0), 0);
+
+      document.getElementById(prefix + "Checks").innerHTML = checks.map(c => `
+        <li class="${c.pass ? 'pass' : 'fail'}">
+          <span class="check-icon"><i class="fa-solid ${c.pass ? 'fa-check' : 'fa-xmark'}"></i></span>
+          <span>${c.label}</span>
+          <span class="pts">${c.pass ? c.points : 0}/${c.points}</span>
+        </li>
+      `).join('');
+
+      const fill = document.getElementById(prefix + "Fill");
+      const badge = document.getElementById(prefix + "Badge");
+      fill.style.width = total + "%";
+      fill.innerText = total;
+
+      let color, cls, txt;
+      if (total >= 80) { color = "#16a34a"; cls = "good"; txt = "SEO Tốt"; }
+      else if (total >= 50) { color = "#f59e0b"; cls = "ok"; txt = "Cần cải thiện"; }
+      else { color = "#dc2626"; cls = "bad"; txt = "SEO Kém"; }
+
+      fill.style.background = color;
+      badge.className = "badge-seo " + cls;
+      badge.innerText = `${total}/100 — ${txt}`;
+      return total;
+    }
+
+    function setModuleStatus(id, total) {
+      const el = document.getElementById("modStatus-" + id);
+      if (!el) return;
+      el.className = "m-status " + (total >= 80 ? "good" : total >= 50 ? "ok" : "bad");
+      el.innerText = total + "/100";
+    }
+
+    function deaccent(str) {
+      return String(str || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d").replace(/Đ/g, "D");
+    }
+
+    function makeSlug(text) {
+      return deaccent(text)
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function setImg(containerId, url, placeholder) {
+      const box = document.getElementById(containerId);
+      if (!box) return;
+      const u = (url || "").trim();
+      if (u.length > 10) {
+        box.innerHTML = `<img src="${u}" alt="preview" onerror="this.parentElement.innerHTML='<span class=&quot;fb-img-placeholder&quot;>${placeholder}</span>'">`;
+      } else {
+        box.innerHTML = `<span class="fb-img-placeholder">${placeholder}</span>`;
+      }
+    }
+
+    function esc(s) {
+      return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    /* =========================================================
+       MODULE 1 — SITE SEO
+    ========================================================= */
+    function onSiteInput() {
+      const title = document.getElementById("siteTitle").value;
+      const desc = document.getElementById("siteDesc").value;
+      const kw = document.getElementById("siteKeyword").value.trim();
+      const gsc = document.getElementById("siteGSC").value;
+      const robots = document.getElementById("siteRobots").value;
+      const canonical = document.getElementById("siteCanonical").value;
+
+      setCounter("siteTitleCount", title.length, 70);
+      setCounter("siteDescCount", desc.length, 160);
+
+      document.getElementById("sitePrevUrl").innerText = canonical.replace(/^https?:\/\//, "").replace(/\/$/, "");
+      document.getElementById("sitePrevTitle").innerText = title || "— Chưa có tiêu đề —";
+      document.getElementById("sitePrevDesc").innerText = desc || "— Chưa có mô tả —";
+
+      const checks = [
+        { label: "Meta Title dài 45–65 ký tự", pass: title.length >= 45 && title.length <= 65, points: 20 },
+        { label: "Meta Title chứa tên thương hiệu FreshDrinks", pass: /freshdrinks/i.test(title), points: 15 },
+        { label: "Meta Description dài 120–160 ký tự", pass: desc.length >= 120 && desc.length <= 160, points: 20 },
+        { label: "Meta Description chứa từ khóa chính", pass: !!kw && desc.toLowerCase().includes(kw.toLowerCase()), points: 15 },
+        { label: "Đã cấu hình Google Search Console", pass: /google-site-verification=/.test(gsc), points: 15 },
+        { label: "Robots cho phép lập chỉ mục (index, follow)", pass: robots === "index, follow", points: 15 }
+      ];
+
+      const total = scoreRender("site", checks);
+      setModuleStatus("site", total);
+
+      document.getElementById("siteMetaCode").textContent =
+`<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}" />
+<meta name="keywords" content="${esc(kw)}" />
+<meta name="robots" content="${esc(robots)}" />
+<meta name="google-site-verification" content="${esc(gsc.replace('google-site-verification=', ''))}" />
+<link rel="canonical" href="${esc(canonical)}" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="${esc(title)}" />
+<meta property="og:description" content="${esc(desc)}" />
+<meta property="og:url" content="${esc(canonical)}" />
+<meta property="og:site_name" content="FreshDrinks Artisan" />`;
+    }
+
+    function collectSite() {
+      cfg.site = {
+        title: document.getElementById("siteTitle").value,
+        desc: document.getElementById("siteDesc").value,
+        keyword: document.getElementById("siteKeyword").value,
+        gsc: document.getElementById("siteGSC").value,
+        robots: document.getElementById("siteRobots").value,
+        canonical: document.getElementById("siteCanonical").value
+      };
+    }
+
+    function restoreSite() {
+      if (!cfg.site) return;
+      const s = cfg.site;
+      document.getElementById("siteTitle").value = s.title ?? "";
+      document.getElementById("siteDesc").value = s.desc ?? "";
+      document.getElementById("siteKeyword").value = s.keyword ?? "";
+      document.getElementById("siteGSC").value = s.gsc ?? "";
+      document.getElementById("siteRobots").value = s.robots ?? "index, follow";
+      document.getElementById("siteCanonical").value = s.canonical ?? "https://freshdrinks.vn/";
+    }
+
+    /* =========================================================
+       MODULE 2 — PRODUCT SEO
+    ========================================================= */
+    function loadProductSEO() {
+      const id = document.getElementById("prodSelect").value;
+      if (!id) {
+        document.getElementById("prodMetaInfo").value = "";
+        return;
+      }
+      const p = products.find(x => String(x.id) === String(id));
+      if (!p) return;
+
+      const cat = categories.find(c => c.id === p.category);
+      document.getElementById("prodMetaInfo").value =
+        `${cat ? cat.name : p.category} • ${Number(p.price).toLocaleString('vi-VN')} đ • Kho ${p.quantity} ly`;
+
+      const saved = cfg.products[id];
+      const kw = saved?.keyword || deaccent(p.name).toLowerCase();
+
+      document.getElementById("prodTitle").value =
+        saved?.title || `${p.name} | FreshDrinks — Đặt Giao Nhanh 20 Phút`;
+      document.getElementById("prodDesc").value =
+        saved?.desc || p.desc || `Thưởng thức ${p.name} tại FreshDrinks. Nguyên liệu tươi sạch, pha chế thủ công, giao nhanh tận nơi trong 20 phút.`;
+      document.getElementById("prodKeyword").value = kw;
+      document.getElementById("prodSlug").value = saved?.slug || `/san-pham/${makeSlug(p.name)}`;
+      document.getElementById("prodImage").value = saved?.image || p.image || "";
+      document.getElementById("prodSchema").value = saved?.schema || "Product";
+
+      onProductInput();
+    }
+
+    function onProductInput() {
+      const title = document.getElementById("prodTitle").value;
+      const desc = document.getElementById("prodDesc").value;
+      const kw = document.getElementById("prodKeyword").value.trim();
+      const slug = document.getElementById("prodSlug").value.trim();
+      const img = document.getElementById("prodImage").value;
+      const schema = document.getElementById("prodSchema").value;
+      const id = document.getElementById("prodSelect").value;
+      const p = products.find(x => String(x.id) === String(id));
+
+      setCounter("prodTitleCount", title.length, 70);
+      setCounter("prodDescCount", desc.length, 160);
+
+      const slugPath = slug.replace(/^\//, "").replace(/\//g, " › ") || "san-pham";
+      document.getElementById("prodPrevUrl").innerText = `https://freshdrinks.vn › ${slugPath}`;
+      document.getElementById("prodPrevTitle").innerText = title || "— Chưa có tiêu đề —";
+      document.getElementById("prodPrevDesc").innerText = desc || "— Chưa có mô tả —";
+
+      document.getElementById("prodFbTitle").innerText = title || "— Chưa có tiêu đề —";
+      document.getElementById("prodFbDesc").innerText = desc || "— Chưa có mô tả —";
+      setImg("prodFbImg", img, "Chưa có ảnh");
+
+      const kwNorm = deaccent(kw).toLowerCase();
+
+      const checks = [
+        { label: "Meta Title dài 45–65 ký tự", pass: title.length >= 45 && title.length <= 65, points: 15 },
+        { label: "Meta Title chứa từ khóa chính", pass: !!kwNorm && deaccent(title).toLowerCase().includes(kwNorm), points: 15 },
+        { label: "Meta Title chứa tên thương hiệu", pass: /freshdrinks/i.test(title), points: 10 },
+        { label: "Meta Description dài 120–160 ký tự", pass: desc.length >= 120 && desc.length <= 160, points: 15 },
+        { label: "Meta Description chứa từ khóa chính", pass: !!kwNorm && deaccent(desc).toLowerCase().includes(kwNorm), points: 15 },
+        { label: "Slug chuẩn SEO (không dấu, có gạch ngang)", pass: /^\/[a-z0-9-]+(\/[a-z0-9-]+)*$/.test(slug) && slug.includes("-"), points: 10 },
+        { label: "Có ảnh đại diện og:image", pass: (img || "").trim().length > 10, points: 10 },
+        { label: "Đã chọn Schema Markup", pass: !!schema, points: 10 }
+      ];
+
+      const total = scoreRender("prod", checks);
+      setModuleStatus("product", total);
+
+      const fullTitle = esc(title), fullDesc = esc(desc);
+      document.getElementById("prodMetaCode").textContent =
+`<title>${fullTitle}</title>
+<meta name="description" content="${fullDesc}" />
+<meta name="keywords" content="${esc(kw)}" />
+<link rel="canonical" href="https://freshdrinks.vn${esc(slug)}" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="product" />
+<meta property="og:title" content="${fullTitle}" />
+<meta property="og:description" content="${fullDesc}" />
+<meta property="og:image" content="${esc(img)}" />
+<meta property="og:url" content="https://freshdrinks.vn${esc(slug)}" />
+
+<!-- Schema ${esc(schema)} -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "${esc(schema)}",
+  "name": "${esc(p ? p.name : '')}",
+  "description": "${fullDesc}",
+  "image": "${esc(img)}",
+  "offers": {
+    "@type": "Offer",
+    "price": ${p ? Number(p.price) : 0},
+    "priceCurrency": "VND",
+    "availability": "https://schema.org/${p && p.quantity > 0 ? 'InStock' : 'OutOfStock'}"
+  }
+}
+<\/script>`;
+    }
+
+    function autoProductSEO() {
+      const id = document.getElementById("prodSelect").value;
+      if (!id) return alert("⚠️ Vui lòng chọn sản phẩm trước!");
+      const p = products.find(x => String(x.id) === String(id));
+      if (!p) return;
+      const cat = categories.find(c => c.id === p.category);
+
+      const kw = deaccent(p.name).toLowerCase();
+
+      let title = `${p.name} | FreshDrinks — ${cat ? cat.name : 'Đồ Uống'} Giao Nhanh 20 Phút`;
+      if (title.length > 65) title = title.substring(0, 62).trim() + "...";
+
+      let desc = (p.desc || "").trim();
+      if (desc.length < 120) {
+        desc += ` Đặt ${p.name} online tại FreshDrinks, giao tận nơi trong 20 phút. Nguyên liệu tươi sạch, pha chế thủ công mỗi ngày.`;
+      }
+      if (desc.length > 160) desc = desc.substring(0, 157).trim() + "...";
+
+      document.getElementById("prodTitle").value = title;
+      document.getElementById("prodDesc").value = desc;
+      document.getElementById("prodKeyword").value = kw;
+      document.getElementById("prodSlug").value = `/san-pham/${makeSlug(p.name)}`;
+      document.getElementById("prodImage").value = p.image || "";
+
+      onProductInput();
+      toast(`Đã tự động sinh SEO cho "${p.name}"`);
+    }
+
+    function saveProductSEO() {
+      const id = document.getElementById("prodSelect").value;
+      if (!id) return alert("⚠️ Vui lòng chọn sản phẩm trước khi lưu!");
+      cfg.products[id] = {
+        title: document.getElementById("prodTitle").value,
+        desc: document.getElementById("prodDesc").value,
+        keyword: document.getElementById("prodKeyword").value,
+        slug: document.getElementById("prodSlug").value,
+        image: document.getElementById("prodImage").value,
+        schema: document.getElementById("prodSchema").value
+      };
+      persist();
+      renderProductOverview();
+      toast("Đã lưu SEO sản phẩm");
+    }
+
+    function calcProductScore(s) {
+      let score = 0;
+      if (!s) return 0;
+      if (s.title && s.title.length >= 45 && s.title.length <= 65) score += 15;
+      if (s.title && s.keyword && deaccent(s.title).toLowerCase().includes(deaccent(s.keyword).toLowerCase())) score += 15;
+      if (s.title && /freshdrinks/i.test(s.title)) score += 10;
+      if (s.desc && s.desc.length >= 120 && s.desc.length <= 160) score += 15;
+      if (s.desc && s.keyword && deaccent(s.desc).toLowerCase().includes(deaccent(s.keyword).toLowerCase())) score += 15;
+      if (s.slug && /^\/[a-z0-9-]+/.test(s.slug)) score += 10;
+      if (s.image && s.image.length > 10) score += 10;
+      if (s.schema) score += 10;
+      return score;
+    }
+
+    function renderProductOverview() {
+      const tbody = document.getElementById("prodOverviewBody");
+      if (!tbody) return;
+
+      if (!products.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:#64748b;">Chưa có sản phẩm.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = products.map(p => {
+        const s = cfg.products[p.id];
+        const score = calcProductScore(s);
+        const cls = score >= 80 ? "good" : score >= 50 ? "ok" : "bad";
+        return `
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <img src="${p.image}" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0;">
+                <span style="font-weight:700;font-size:13.5px;color:#0f172a;">${p.name}</span>
+              </div>
+            </td>
+            <td>${s && s.title ? '<span class="badge-seo good" style="font-size:11px;">Đã tối ưu</span>' : '<span class="badge-seo bad" style="font-size:11px;">Chưa có</span>'}</td>
+            <td>${s && s.desc ? '<span class="badge-seo good" style="font-size:11px;">Đã tối ưu</span>' : '<span class="badge-seo bad" style="font-size:11px;">Chưa có</span>'}</td>
+            <td><span class="badge-seo ${cls}" style="font-size:11px;">${score}/100</span></td>
+            <td><button class="btn-action-edit" onclick="editProductSEO('${p.id}')"><i class="fa-solid fa-pen"></i> Sửa</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function editProductSEO(id) {
+      document.getElementById("prodSelect").value = id;
+      loadProductSEO();
+      document.getElementById("panel-product").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    /* =========================================================
+       MODULE 3 — ARTICLE SEO
+    ========================================================= */
+    function loadArticleSEO() {
+      const id = document.getElementById("artSelect").value;
+      if (!id) {
+        document.getElementById("artMetaInfo").value = "";
+        return;
+      }
+      const a = articles.find(x => String(x.id) === String(id));
+      if (!a) return;
+
+      document.getElementById("artMetaInfo").value =
+        `${a.category || 'Bài viết'} • ${a.author || 'Chưa rõ tác giả'} • ${a.date || ''}`;
+
+      const saved = cfg.articles[id];
+      const kw = saved?.keyword || deaccent(a.title).toLowerCase();
+
+      document.getElementById("artTitle").value = saved?.title || a.title;
+      document.getElementById("artDesc").value = saved?.desc || a.excerpt || "";
+      document.getElementById("artKeyword").value = kw;
+      document.getElementById("artSlug").value = saved?.slug || `/blog/${a.slug || makeSlug(a.title)}`;
+      document.getElementById("artAuthor").value = saved?.author || a.author || "";
+      document.getElementById("artCategory").value = saved?.category || a.category || "";
+      document.getElementById("artStatus").value = saved?.status || a.status || "published";
+      document.getElementById("artTags").value = saved?.tags || a.tags || "";
+      document.getElementById("artImage").value = saved?.image || a.image || "";
+      document.getElementById("artSchema").value = saved?.schema || "BlogPosting";
+
+      onArticleInput();
+    }
+
+    function onArticleInput() {
+      const title = document.getElementById("artTitle").value;
+      const desc = document.getElementById("artDesc").value;
+      const kw = document.getElementById("artKeyword").value.trim();
+      const slug = document.getElementById("artSlug").value.trim();
+      const author = document.getElementById("artAuthor").value.trim();
+      const category = document.getElementById("artCategory").value.trim();
+      const status = document.getElementById("artStatus").value;
+      const tags = document.getElementById("artTags").value.trim();
+      const img = document.getElementById("artImage").value;
+      const schema = document.getElementById("artSchema").value;
+      const id = document.getElementById("artSelect").value;
+      const a = articles.find(x => String(x.id) === String(id));
+
+      setCounter("artTitleCount", title.length, 70);
+      setCounter("artDescCount", desc.length, 160);
+
+      const slugPath = slug.replace(/^\//, "").replace(/\//g, " › ") || "blog";
+      document.getElementById("artPrevUrl").innerText = `https://freshdrinks.vn › ${slugPath}`;
+      document.getElementById("artPrevTitle").innerText = title || "— Chưa có tiêu đề —";
+      document.getElementById("artPrevDesc").innerText = desc || "— Chưa có mô tả —";
+
+      document.getElementById("artFbTitle").innerText = title || "— Chưa có tiêu đề —";
+      document.getElementById("artFbDesc").innerText = desc || "— Chưa có mô tả —";
+      setImg("artFbImg", img, "Chưa có ảnh");
+
+      const kwNorm = deaccent(kw).toLowerCase();
+      const tagCount = tags ? tags.split(",").filter(t => t.trim()).length : 0;
+
+      const checks = [
+        { label: "Meta Title dài 45–65 ký tự", pass: title.length >= 45 && title.length <= 65, points: 10 },
+        { label: "Meta Title chứa từ khóa chính", pass: !!kwNorm && deaccent(title).toLowerCase().includes(kwNorm), points: 10 },
+        { label: "Meta Title chứa tên thương hiệu", pass: /freshdrinks/i.test(title), points: 5 },
+        { label: "Meta Description dài 120–160 ký tự", pass: desc.length >= 120 && desc.length <= 160, points: 10 },
+        { label: "Meta Description chứa từ khóa chính", pass: !!kwNorm && deaccent(desc).toLowerCase().includes(kwNorm), points: 10 },
+        { label: "Slug bài viết chuẩn SEO", pass: /^\/[a-z0-9-]+(\/[a-z0-9-]+)*$/.test(slug) && slug.includes("-"), points: 10 },
+        { label: "Có ảnh đại diện og:image", pass: (img || "").trim().length > 10, points: 10 },
+        { label: "Đã khai báo tác giả (E-E-A-T)", pass: author.length >= 3, points: 10 },
+        { label: "Có ít nhất 2 tags / từ khóa phụ", pass: tagCount >= 2, points: 10 },
+        { label: "Đã chọn Schema Markup", pass: !!schema, points: 15 }
+      ];
+
+      const total = scoreRender("art", checks);
+      setModuleStatus("article", total);
+
+      document.getElementById("artMetaCode").textContent =
+`<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}" />
+<meta name="keywords" content="${esc(tags)}" />
+<meta name="author" content="${esc(author)}" />
+<meta name="robots" content="${status === 'published' ? 'index, follow' : 'noindex, follow'}" />
+<link rel="canonical" href="https://freshdrinks.vn${esc(slug)}" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="${esc(title)}" />
+<meta property="og:description" content="${esc(desc)}" />
+<meta property="og:image" content="${esc(img)}" />
+<meta property="og:url" content="https://freshdrinks.vn${esc(slug)}" />
+<meta property="article:author" content="${esc(author)}" />
+<meta property="article:section" content="${esc(category)}" />
+
+<!-- Schema ${esc(schema)} -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "${esc(schema)}",
+  "headline": "${esc(title)}",
+  "description": "${esc(desc)}",
+  "image": "${esc(img)}",
+  "author": { "@type": "Person", "name": "${esc(author)}" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "FreshDrinks Artisan",
+    "logo": { "@type": "ImageObject", "url": "https://freshdrinks.vn/logo.png" }
+  },
+  "datePublished": "${esc(a ? a.date : '')}",
+  "articleSection": "${esc(category)}"
+}
+<\/script>`;
+    }
+
+    function autoArticleSEO() {
+      const id = document.getElementById("artSelect").value;
+      if (!id) return alert("⚠️ Vui lòng chọn bài viết trước!");
+      const a = articles.find(x => String(x.id) === String(id));
+      if (!a) return;
+
+      let title = `${a.title} | Blog FreshDrinks`;
+      if (title.length > 65) title = a.title.substring(0, 52).trim() + " | FreshDrinks";
+
+      let desc = (a.excerpt || "").trim();
+      if (desc.length < 120) {
+        desc += ` Đọc bài viết chi tiết trên blog FreshDrinks để khám phá thêm nhiều bí quyết pha chế đồ uống thơm ngon.`;
+      }
+      if (desc.length > 160) desc = desc.substring(0, 157).trim() + "...";
+
+      document.getElementById("artTitle").value = title;
+      document.getElementById("artDesc").value = desc;
+      document.getElementById("artKeyword").value = deaccent(a.title).toLowerCase();
+      document.getElementById("artSlug").value = `/blog/${a.slug || makeSlug(a.title)}`;
+      document.getElementById("artTags").value = a.tags || "";
+      document.getElementById("artImage").value = a.image || "";
+
+      onArticleInput();
+      toast(`Đã tự động sinh SEO cho bài viết "${a.title}"`);
+    }
+
+    function saveArticleSEO() {
+      const id = document.getElementById("artSelect").value;
+      if (!id) return alert("⚠️ Vui lòng chọn bài viết trước khi lưu!");
+      cfg.articles[id] = {
+        title: document.getElementById("artTitle").value,
+        desc: document.getElementById("artDesc").value,
+        keyword: document.getElementById("artKeyword").value,
+        slug: document.getElementById("artSlug").value,
+        author: document.getElementById("artAuthor").value,
+        category: document.getElementById("artCategory").value,
+        status: document.getElementById("artStatus").value,
+        tags: document.getElementById("artTags").value,
+        image: document.getElementById("artImage").value,
+        schema: document.getElementById("artSchema").value
+      };
+      persist();
+      renderArticleOverview();
+      toast("Đã lưu SEO bài viết");
+    }
+
+    function calcArticleScore(s) {
+      let score = 0;
+      if (!s) return 0;
+      if (s.title && s.title.length >= 45 && s.title.length <= 65) score += 10;
+      if (s.title && s.keyword && deaccent(s.title).toLowerCase().includes(deaccent(s.keyword).toLowerCase())) score += 10;
+      if (s.title && /freshdrinks/i.test(s.title)) score += 5;
+      if (s.desc && s.desc.length >= 120 && s.desc.length <= 160) score += 10;
+      if (s.desc && s.keyword && deaccent(s.desc).toLowerCase().includes(deaccent(s.keyword).toLowerCase())) score += 10;
+      if (s.slug && /^\/[a-z0-9-]+/.test(s.slug)) score += 10;
+      if (s.image && s.image.length > 10) score += 10;
+      if (s.author && s.author.length >= 3) score += 10;
+      if (s.tags && s.tags.split(",").filter(t => t.trim()).length >= 2) score += 10;
+      if (s.schema) score += 15;
+      return score;
+    }
+
+    function renderArticleOverview() {
+      const tbody = document.getElementById("artOverviewBody");
+      if (!tbody) return;
+
+      if (!articles.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:#64748b;">Chưa có bài viết.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = articles.map(a => {
+        const s = cfg.articles[a.id];
+        const score = calcArticleScore(s);
+        const cls = score >= 80 ? "good" : score >= 50 ? "ok" : "bad";
+        const status = (s && s.status) || a.status || "published";
+        return `
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <img src="${a.image}" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0;">
+                <span style="font-weight:700;font-size:13.5px;color:#0f172a;max-width:300px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.title}</span>
+              </div>
+            </td>
+            <td style="font-size:13px;color:#475569;">${a.category || '—'}</td>
+            <td>${status === 'published'
+              ? '<span class="badge-seo good" style="font-size:11px;">Đã đăng</span>'
+              : '<span class="badge-seo ok" style="font-size:11px;">Nháp</span>'}</td>
+            <td><span class="badge-seo ${cls}" style="font-size:11px;">${score}/100</span></td>
+            <td><button class="btn-action-edit" onclick="editArticleSEO('${a.id}')"><i class="fa-solid fa-pen"></i> Sửa</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function editArticleSEO(id) {
+      document.getElementById("artSelect").value = id;
+      loadArticleSEO();
+      document.getElementById("panel-article").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    /* =========================================================
+       MODULE 4 — FACEBOOK
+    ========================================================= */
+    function onFacebookInput() {
+      const pixel = document.getElementById("fbPixelId").value.trim();
+      const ogTitle = document.getElementById("fbOgTitle").value;
+      const ogDesc = document.getElementById("fbOgDesc").value;
+      const ogImage = document.getElementById("fbOgImage").value;
+      const ogUrl = document.getElementById("fbOgUrl").value;
+      const ogType = document.getElementById("fbOgType").value;
+      const fanpage = document.getElementById("fbFanpage").value.trim();
+      const appId = document.getElementById("fbAppId").value.trim();
+      const capi = document.getElementById("fbCapiToken").value.trim();
+
+      const events = [
+        { id: "fbEvPageView", name: "PageView", code: "fbq('track', 'PageView');" },
+        { id: "fbEvViewContent", name: "ViewContent", code: "fbq('track', 'ViewContent', {content_name: 'Ten san pham', content_ids: ['ID'], content_type: 'product', value: 45000, currency: 'VND'});" },
+        { id: "fbEvAddToCart", name: "AddToCart", code: "fbq('track', 'AddToCart', {content_name: 'Ten san pham', content_ids: ['ID'], content_type: 'product', value: 45000, currency: 'VND'});" },
+        { id: "fbEvInitCheckout", name: "InitiateCheckout", code: "fbq('track', 'InitiateCheckout', {num_items: 2, value: 104000, currency: 'VND'});" },
+        { id: "fbEvPurchase", name: "Purchase", code: "fbq('track', 'Purchase', {value: 104000, currency: 'VND', num_items: 2});" },
+        { id: "fbEvSearch", name: "Search", code: "fbq('track', 'Search', {search_string: 'tra dao'});" }
+      ];
+
+      const activeEvents = events.filter(e => document.getElementById(e.id).checked);
+
+      document.getElementById("fbMainTitle").innerText = ogTitle || "— Chưa có tiêu đề —";
+      document.getElementById("fbMainDesc").innerText = ogDesc || "— Chưa có mô tả —";
+      document.getElementById("fbMainDomain").innerText =
+        (ogUrl || "freshdrinks.vn").replace(/^https?:\/\//, "").replace(/\/.*$/, "").toUpperCase();
+      setImg("fbMainImg", ogImage, "Chưa có ảnh");
+
+      const checks = [
+        { label: "Đã cấu hình Facebook Pixel ID (15–16 số)", pass: /^\d{15,16}$/.test(pixel), points: 20 },
+        { label: "Đã có og:title", pass: ogTitle.trim().length > 5, points: 10 },
+        { label: "og:description dài 40–120 ký tự", pass: ogDesc.trim().length >= 40 && ogDesc.trim().length <= 120, points: 10 },
+        { label: "Đã có og:image (1200×630 lý tưởng)", pass: ogImage.trim().length > 10, points: 15 },
+        { label: "Đã có og:url hợp lệ", pass: /^https?:\/\/.+/.test(ogUrl), points: 10 },
+        { label: "Đã chọn og:type", pass: !!ogType, points: 5 },
+        { label: "Đã cấu hình Fanpage URL", pass: /facebook\.com\/.+/.test(fanpage), points: 10 },
+        { label: "Bật tối thiểu 4 sự kiện theo dõi", pass: activeEvents.length >= 4, points: 10 },
+        { label: "Có Facebook App ID hoặc Conversions API", pass: !!appId || !!capi, points: 10 }
+      ];
+
+      const total = scoreRender("fb", checks);
+      const st = document.getElementById("modStatus-facebook");
+      if (st) {
+        st.className = "m-status " + (total >= 80 ? "good" : total >= 50 ? "ok" : "bad");
+        st.innerText = total + "/100";
+      }
+
+      const eventCode = activeEvents.map(e => "  " + e.code).join("\n");
+      document.getElementById("fbCode").textContent =
+`<!-- ===== Facebook Pixel ===== -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '${pixel || 'YOUR_PIXEL_ID'}');
+${eventCode}
+<\/script>
+<noscript>
+  <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=${pixel || 'YOUR_PIXEL_ID'}&ev=PageView&noscript=1"/>
+</noscript>
+<!-- ===== End Facebook Pixel ===== -->
+
+<!-- ===== Open Graph ===== -->
+<meta property="og:type" content="${ogType}" />
+<meta property="og:title" content="${esc(ogTitle)}" />
+<meta property="og:description" content="${esc(ogDesc)}" />
+<meta property="og:image" content="${esc(ogImage)}" />
+<meta property="og:url" content="${esc(ogUrl)}" />
+<meta property="og:site_name" content="FreshDrinks Artisan" />
+<meta property="fb:app_id" content="${esc(appId || 'YOUR_APP_ID')}" />`;
+    }
+
+    function saveFacebook() {
+      cfg.facebook = {
+        pixelId: document.getElementById("fbPixelId").value,
+        capiToken: document.getElementById("fbCapiToken").value,
+        ogTitle: document.getElementById("fbOgTitle").value,
+        ogType: document.getElementById("fbOgType").value,
+        ogDesc: document.getElementById("fbOgDesc").value,
+        ogImage: document.getElementById("fbOgImage").value,
+        ogUrl: document.getElementById("fbOgUrl").value,
+        fanpage: document.getElementById("fbFanpage").value,
+        appId: document.getElementById("fbAppId").value,
+        events: {
+          PageView: document.getElementById("fbEvPageView").checked,
+          ViewContent: document.getElementById("fbEvViewContent").checked,
+          AddToCart: document.getElementById("fbEvAddToCart").checked,
+          InitiateCheckout: document.getElementById("fbEvInitCheckout").checked,
+          Purchase: document.getElementById("fbEvPurchase").checked,
+          Search: document.getElementById("fbEvSearch").checked
+        }
+      };
+      persist();
+      toast("Đã lưu cấu hình Facebook");
+    }
+
+    function restoreFacebook() {
+      const f = cfg.facebook;
+      if (!f) return;
+      document.getElementById("fbPixelId").value = f.pixelId ?? "";
+      document.getElementById("fbCapiToken").value = f.capiToken ?? "";
+      document.getElementById("fbOgTitle").value = f.ogTitle ?? "";
+      document.getElementById("fbOgType").value = f.ogType ?? "website";
+      document.getElementById("fbOgDesc").value = f.ogDesc ?? "";
+      document.getElementById("fbOgImage").value = f.ogImage ?? "";
+      document.getElementById("fbOgUrl").value = f.ogUrl ?? "";
+      document.getElementById("fbFanpage").value = f.fanpage ?? "";
+      document.getElementById("fbAppId").value = f.appId ?? "";
+      if (f.events) {
+        document.getElementById("fbEvPageView").checked = !!f.events.PageView;
+        document.getElementById("fbEvViewContent").checked = !!f.events.ViewContent;
+        document.getElementById("fbEvAddToCart").checked = !!f.events.AddToCart;
+        document.getElementById("fbEvInitCheckout").checked = !!f.events.InitiateCheckout;
+        document.getElementById("fbEvPurchase").checked = !!f.events.Purchase;
+        document.getElementById("fbEvSearch").checked = !!f.events.Search;
+      }
+    }
+
+    /* =========================================================
+       PERSIST / RESTORE / EXPORT
+    ========================================================= */
+    function persist() {
+      collectSite();
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify(cfg));
+        const note = document.getElementById("saveNote");
+        const now = new Date().toLocaleTimeString("vi-VN");
+        note.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> Đã lưu lúc ${now}`;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function restoreConfig() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          cfg = {
+            site: parsed.site || null,
+            products: parsed.products || {},
+            articles: parsed.articles || {},
+            facebook: parsed.facebook || null
+          };
+        }
+      } catch (e) {
+        console.error("Không đọc được cấu hình cũ", e);
+      }
+
+      restoreSite();
+      restoreFacebook();
+
+      if (products.length) {
+        document.getElementById("prodSelect").value = products[0].id;
+        loadProductSEO();
+      }
+      if (articles.length) {
+        document.getElementById("artSelect").value = articles[0].id;
+        loadArticleSEO();
+      }
+
+      renderProductOverview();
+      renderArticleOverview();
+    }
+
+    function saveAll() {
+      persist();
+      toast("Đã lưu toàn bộ cấu hình SEO & Facebook");
+    }
+
+    function exportConfig() {
+      collectSite();
+      const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "freshdrinks-seo-config.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("Đã xuất file cấu hình JSON");
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+    function toast(msg) {
+      let el = document.getElementById("fdToast");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "fdToast";
+        el.style.cssText = "position:fixed; bottom:28px; right:28px; background:#0f172a; color:#fff;" +
+          "padding:14px 22px; border-radius:11px; font-size:14px; font-weight:600;" +
+          "box-shadow:0 12px 30px rgba(0,0,0,0.25); z-index:9999;" +
+          "display:flex; align-items:center; gap:10px;" +
+          "transform:translateY(20px); opacity:0; transition:all 0.28s ease;";
+        document.body.appendChild(el);
+      }
+      el.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#4ade80;"></i> ${msg}`;
+      requestAnimationFrame(() => {
+        el.style.transform = "translateY(0)";
+        el.style.opacity = "1";
+      });
+      clearTimeout(el._t);
+      el._t = setTimeout(() => {
+        el.style.transform = "translateY(20px)";
+        el.style.opacity = "0";
+      }, 2400);
+    }
+  </script>
+</body>
+</html>

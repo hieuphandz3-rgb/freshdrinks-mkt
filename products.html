@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshDrinks - Thực Đơn Đồ Uống | Cà Phê, Trà Trái Cây, Sinh Tố, Nước Ép</title>
+  <meta name="description" content="Khám phá toàn bộ thực đơn FreshDrinks: cà phê pha máy, trà đào cam sả, trà sữa oolong, sinh tố bơ, nước ép tươi, bánh ngọt. Lọc theo danh mục & đặt giao nhanh 20 phút." />
+  <meta name="keywords" content="thực đơn đồ uống, cà phê, trà trái cây, sinh tố, nước ép, menu FreshDrinks, đặt đồ uống online" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://freshdrinks.vn/thuc-don" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FreshDrinks - Thực Đơn Đồ Uống | Cà Phê, Trà Trái Cây, Sinh Tố" />
+  <meta property="og:description" content="Khám phá toàn bộ thực đơn FreshDrinks. Lọc theo danh mục & đặt giao nhanh 20 phút." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=1200&q=80" />
+  <meta property="og:site_name" content="FreshDrinks Artisan" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- TẦNG 1: THANH ĐIỀU HƯỚNG MÀN HÌNH -->
+  <div class="demo-top-bar">
+    <div class="demo-top-container">
+      <div class="demo-nav-group">
+        <span class="demo-title">
+          <i class="fa-solid fa-layer-group"></i> Chọn màn hình:
+        </span>
+        <a href="index.html" class="demo-btn">Trang chủ</a>
+        <a href="products.html" class="demo-btn active">Thực đơn & Lọc</a>
+        <a href="login.html" class="demo-btn">Đăng ký / Đăng nhập</a>
+        <a href="cart.html" class="demo-btn">Giỏ hàng</a>
+        <a href="checkout.html" class="demo-btn">Thanh toán</a>
+      </div>
+
+      <a href="admin/index.html" class="demo-admin-btn">
+        <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
+      </a>
+    </div>
+  </div>
+
+  <!-- TẦNG 2: HEADER CHÍNH -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fa-solid fa-mug-hot"></i> FreshDrinks</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="products.html" class="active">Thực đơn</a></li>
+        <li><a id="authNavLink" href="login.html">Tài khoản</a></li>
+      </ul>
+      <a href="cart.html" class="cart-btn">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="sec-title" style="border-left: 4px solid var(--primary); padding-left: 12px;">Thực Đơn Đồ Uống FreshDrinks</h1>
+    <div class="filter-tabs" id="tabBar"></div>
+    <div class="product-grid" id="productGrid">
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 26px;"></i>
+        <p style="margin-top: 10px;">Đang tải danh sách đồ uống...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>FreshDrinks Artisan</h3>
+        <p>Chuỗi cà phê & trà trái cây giải khát chất lượng cao mang lại nguồn cảm hứng và năng lượng tích cực[cite: 3].</p>
+      </div>
+      <div class="footer-column">
+        <h3>Liên kết nhanh</h3>
+        <a href="index.html">Trang chủ[cite: 3]</a>
+        <a href="products.html">Thực đơn đồ uống[cite: 3]</a>
+        <a href="cart.html">Giỏ hàng của bạn[cite: 3]</a>
+      </div>
+      <div class="footer-column">
+        <h3>Liên hệ</h3>
+        <p>Hotline: 1900 123 456[cite: 3]</p>
+        <p>Email: contact@freshdrinks.com[cite: 3]</p>
+        <p>Địa chỉ: Hải Châu, TP. Đà Nẵng[cite: 3]</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 FreshDrinks Artisan Coffee & Tea. All rights reserved[cite: 3].</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let currentCat = 'all';
+    let cachedProducts = [];
+    let cachedCategories = [];
+
+    // Dữ liệu dự phòng gốc
+    const fallbackCategories = [
+      { id: "coffee", name: "Cà phê máy" },
+      { id: "tea", name: "Trà & Trái cây" },
+      { id: "iceblend", name: "Đá xay & Sinh tố" }
+    ];
+
+    const fallbackProducts = [
+      { id: "1", name: "Latte Almond", price: 59000, quantity: 35, category: "coffee", image: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=400&q=80", badge: "Bán chạy", desc: "Espresso nguyên chất hòa quyện cùng sữa hạt hạnh nhân béo ngậy thơm nồng." },
+      { id: "2", name: "Trà Đào Cam Sả", price: 45000, quantity: 60, category: "tea", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80", badge: "Best Seller", desc: "Trà đen ủ lạnh thanh mát quyện vị cam vàng tươi và từng lát đào vàng giòn ngọt." },
+      { id: "3", name: "Cà Phê Muối Xứ Huế", price: 39000, quantity: 50, category: "coffee", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=400&q=80", badge: "Best Seller", desc: "Cốt cà phê phin đậm đặc hòa cùng lớp kem mặn béo ngậy chuẩn vị cố đô." },
+      { id: "4", name: "Sinh Tố Bơ Hạt Điều", price: 65000, quantity: 25, category: "iceblend", image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400&q=80", badge: "Bán chạy", desc: "Bơ sáp dẻo quánh xay cùng hạt điều bổ dưỡng mang đến vị bùi béo ngậy tự nhiên." },
+      { id: "5", name: "Trà Sữa Oolong Nướng", price: 48000, quantity: 45, category: "tea", image: "https://images.unsplash.com/photo-1558857563-b37cf5a4f78c?auto=format&fit=crop&w=400&q=80", badge: "Best Seller", desc: "Cốt trà oolong sao nướng đậm hương khói nhẹ kết hợp cùng sữa tươi thanh béo." },
+      { id: "6", name: "Caramel Macchiato", price: 55000, quantity: 40, category: "coffee", image: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=400&q=80", badge: "Bán chạy", desc: "Vị sữa tươi béo dịu đan xen lớp espresso đậm đà cùng sốt caramel thơm ngọt lừng danh." },
+      { id: "7", name: "Trà Mãng Cầu Đắk Lắk", price: 49000, quantity: 35, category: "tea", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80", badge: "Hot Trend", desc: "Thịt mãng cầu tươi dầm ngọt dịu chua thanh trên nền trà lài thơm ngát giải khát tức thì." },
+      { id: "8", name: "Matcha Đá Xay Macchiato", price: 59000, quantity: 30, category: "iceblend", image: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=400&q=80", badge: "Hot Trend", desc: "Bột matcha Uji Nhật Bản nguyên chất xay tuyết phủ lớp kem phô mai béo ngậy mặn mà." },
+      { id: "9", name: "Cold Brew Cam Vàng", price: 49000, quantity: 25, category: "coffee", image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=400&q=80", badge: "Đặc biệt", desc: "Cà phê Arabica ủ lạnh suốt 18 tiếng mang hương vị hoa quả tự nhiên tươi mới và sảng khoái." },
+      { id: "10", name: "Trà Dâu Tây Pha Lê", price: 48000, quantity: 30, category: "tea", image: "https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=400&q=80", badge: "Yêu thích", desc: "Dâu tây tươi ngào mật chua ngọt kết hợp topping thạch ngọc trai giòn sần sật thanh mát." },
+      { id: "11", name: "Chocolate Cookie Đá Xay", price: 62000, quantity: 28, category: "iceblend", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=400&q=80", badge: "Yêu thích", desc: "Sô-cô-la nguyên chất xay đá tuyết mịn màng hòa quyện bánh oreo giòn rụm ngậy béo." },
+      { id: "12", name: "Trà Ổi Hồng Hạt Chia", price: 45000, quantity: 40, category: "tea", image: "https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?auto=format&fit=crop&w=400&q=80", badge: "Healthy", desc: "Cốt trà thanh khiết dồi dào vitamin C từ ổi hồng chín kết hợp hạt chia thanh lọc cơ thể." },
+      { id: "13", name: "Latte Caramel", price: 59000, quantity: 30, category: "coffee", image: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Sốt caramel cao cấp kết hợp sữa tươi thanh trùng chuẩn vị ngọt ngào." },
+      { id: "14", name: "Latte Hazelnut", price: 59000, quantity: 20, category: "coffee", image: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Hạt phỉ thơm nồng nàn với vị bùi đặc trưng đậm gu cá tính." },
+      { id: "15", name: "Latte Coconut", price: 59000, quantity: 22, category: "coffee", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Cốt dừa béo ngọt tự nhiên nâng tầm tầng hương Arabica mộc quyến rũ." },
+      { id: "16", name: "Latte Bạc Xỉu", price: 45000, quantity: 40, category: "coffee", image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Bạc xỉu truyền thống pha máy nhiều sữa ít đắng cực kỳ dễ uống cho ngày mới." },
+      { id: "17", name: "Americano Đá", price: 35000, quantity: 50, category: "coffee", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Espresso pha loãng với nước lạnh giữ vị đậm đà thanh nhẹ giúp tỉnh táo tập trung." },
+      { id: "18", name: "Trà Vải Hoa Hồng", price: 45000, quantity: 35, category: "tea", image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Hương hoa hồng kiêu sa hòa cùng trái vải ngâm mọng nước dịu ngọt sảng khoái." },
+      { id: "19", name: "Trà Chanh Mật Ong Giã Tay", price: 35000, quantity: 45, category: "tea", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Chanh tươi giã tay giải phóng tinh dầu thơm ngát kết hợp mật ong ngọt thanh." },
+      { id: "20", name: "Sữa Chua Phúc Bồn Tử Đá Xay", price: 55000, quantity: 30, category: "iceblend", image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Sữa chua men sống xay tuyết mịn cùng mứt quả phúc bồn tử chua ngọt tự nhiên." },
+      { id: "21", name: "Mocha Hạnh Nhân Đá Xay", price: 59000, quantity: 20, category: "iceblend", image: "https://images.unsplash.com/photo-1579888944880-d98341245702?auto=format&fit=crop&w=400&q=80", badge: null, desc: "Cà phê mocha đậm đặc xay đá rắc vụn hạt hạnh nhân nướng thơm giòn bùi béo." }
+    ];
+
+    function getCartData() {
+      return JSON.parse(localStorage.getItem("fd_cart")) || [];
+    }
+
+    function saveCartData(cart) {
+      localStorage.setItem("fd_cart", JSON.stringify(cart));
+    }
+
+    function addToCart(productId, qty = 1) {
+      const product = cachedProducts.find(p => String(p.id) === String(productId));
+      if (!product) return;
+
+      if (product.quantity <= 0) {
+        alert("❌ Rất tiếc, sản phẩm này hiện đã hết hàng trong kho!");
+        return;
+      }
+
+      const cart = getCartData();
+      const existing = cart.find(i => String(i.product.id) === String(productId));
+
+      if (existing) {
+        if (existing.quantity + qty > product.quantity) {
+          alert(`❌ Kho chỉ còn tối đa ${product.quantity} ly cho món này!`);
+          return;
+        }
+        existing.quantity += qty;
+      } else {
+        cart.push({ product, quantity: qty });
+      }
+
+      saveCartData(cart);
+      if (typeof updateCartBadge === "function") updateCartBadge();
+      alert(`✅ Đã thêm "${product.name}" vào giỏ hàng thành công!`);
+    }
+
+    function buyNow(productId, qty = 1) {
+      const product = cachedProducts.find(p => String(p.id) === String(productId));
+      if (!product) return;
+
+      if (product.quantity <= 0) {
+        alert("❌ Rất tiếc, sản phẩm này hiện đã hết hàng trong kho!");
+        return;
+      }
+
+      const cart = getCartData();
+      const existing = cart.find(i => String(i.product.id) === String(productId));
+
+      if (existing) {
+        if (existing.quantity + qty > product.quantity) {
+          alert(`❌ Kho chỉ còn tối đa ${product.quantity} ly cho món này!`);
+          return;
+        }
+        existing.quantity += qty;
+      } else {
+        cart.push({ product, quantity: qty });
+      }
+
+      saveCartData(cart);
+      if (typeof updateCartBadge === "function") updateCartBadge();
+      window.location.href = "checkout.html";
+    }
+
+    function getCategoryName(catId) {
+      const found = cachedCategories.find(c => c.id === catId);
+      return found ? found.name : catId;
+    }
+
+    function renderTabs() {
+      const filteredCats = cachedCategories.filter(c => c.id !== 'all');
+      const tabs = [{ id: 'all', name: 'Tất cả món' }, ...filteredCats];
+
+      document.getElementById('tabBar').innerHTML = tabs.map(c => `
+        <button class="filter-btn ${currentCat === c.id ? 'active' : ''}" onclick="filterCat('${c.id}')">${c.name}</button>
+      `).join('');
+    }
+
+    function renderProductList() {
+      const list = currentCat === 'all' 
+        ? cachedProducts 
+        : cachedProducts.filter(p => p.category === currentCat);
+
+      const grid = document.getElementById('productGrid');
+      if (!list || list.length === 0) {
+        grid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 40px 0;">Không có món nào trong danh mục này.</p>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(p => `
+        <div class="card-item">
+          <div class="card-img-wrap" onclick="location.href='detail.html?id=${p.id}'">
+            <img class="card-img" src="${p.image}" alt="${p.name}">
+            ${p.badge ? `<span class="badge-tag">${p.badge}</span>` : ''}
+          </div>
+          <span class="card-cat">${getCategoryName(p.category)}</span>
+          <a href="detail.html?id=${p.id}" class="card-name" title="${p.name}">${p.name}</a>
+          <p class="card-desc">${p.desc || ''}</p>
+          <div class="card-meta">
+            <span class="card-price">${Number(p.price).toLocaleString('vi-VN')} đ</span>
+            <span class="card-stock">Kho: ${p.quantity} ly</span>
+          </div>
+
+          <div class="card-btn-combo">
+            <button class="btn-add-cart" onclick="addToCart('${p.id}')" title="Thêm vào giỏ hàng">
+              <i class="fa-solid fa-cart-plus"></i>
+            </button>
+            <button class="btn-buy-now" onclick="buyNow('${p.id}')">
+              <i class="fa-solid fa-bolt"></i> Mua Ngay
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterCat(id) {
+      currentCat = id;
+      renderTabs();
+      renderProductList();
+    }
+
+    async function initProductsPage() {
+      // 1. Thử lấy từ json-server cổng 3001 và 3000
+      const endpoints = ["http://localhost:3001", "http://localhost:3000"];
+      for (const url of endpoints) {
+        try {
+          const resP = await fetch(`${url}/products`);
+          if (resP.ok) {
+            cachedProducts = await resP.json();
+            const resC = await fetch(`${url}/categories`);
+            if (resC.ok) cachedCategories = await resC.json();
+            break;
+          }
+        } catch (e) {}
+      }
+
+      // 2. Thử đọc từ file db.json trực tiếp nếu chưa chạy json-server
+      if (!cachedProducts || cachedProducts.length === 0) {
+        try {
+          const res = await fetch("db.json");
+          if (res.ok) {
+            const data = await res.json();
+            cachedProducts = data.products || [];
+            cachedCategories = data.categories || [];
+          }
+        } catch (e) {}
+      }
+
+      // 3. Fallback lấy mảng gốc để luôn có dữ liệu hiển thị
+      if (!cachedProducts || cachedProducts.length === 0) {
+        cachedProducts = fallbackProducts;
+      }
+      if (!cachedCategories || cachedCategories.length === 0) {
+        cachedCategories = fallbackCategories;
+      }
+
+      renderTabs();
+      renderProductList();
+    }
+
+    document.addEventListener("DOMContentLoaded", initProductsPage);
+  </script>
+</body>
+</html>

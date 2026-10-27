@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Quản lý Sản phẩm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h3><i class="fa-solid fa-mug-hot"></i> FreshDrinks</h3>
+      <ul class="admin-nav">
+        <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="categories.html"><i class="fa-solid fa-tags"></i> Quản lý Danh mục</a></li>
+        <li><a href="products.html" class="active"><i class="fa-solid fa-mug-saucer"></i> Quản lý Sản phẩm</a></li>
+        <li><a href="users.html"><i class="fa-solid fa-users"></i> Khách hàng</a></li>
+        <li><a href="orders.html"><i class="fa-solid fa-receipt"></i> Đơn hàng</a></li>
+        <li><a href="seo.html"><i class="fa-solid fa-magnifying-glass-chart"></i> Cấu hình SEO & FB</a></li>
+        <li><a href="../index.html" style="color:#ef4444; margin-top: auto;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Thoát Admin</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-view-panel">
+      <div class="admin-header-title">
+        <h1 id="prodFormTitle"><i class="fa-solid fa-circle-plus" style="color:var(--admin-primary-dark, #d97706);"></i> Thêm Mới Sản Phẩm Đồ Uống</h1>
+      </div>
+      
+      <!-- FORM THÊM MỚI / CHỈNH SỬA -->
+      <form class="form-card" onsubmit="handleProductSubmit(event)">
+        <input type="hidden" id="editProdId">
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:16px;">
+          <div class="field-group">
+            <label>Tên đồ uống (*)</label>
+            <input id="pName" placeholder="VD: Trà Đào Cam Sả" required>
+          </div>
+          <div class="field-group">
+            <label>Danh mục đồ uống (*)</label>
+            <select id="pCat"></select>
+          </div>
+          <div class="field-group">
+            <label>Giá bán niêm yết (VNĐ) (*)</label>
+            <input id="pPrice" type="number" placeholder="VD: 45000" required>
+          </div>
+          <div class="field-group">
+            <label>Số lượng tồn kho (*)</label>
+            <input id="pQty" type="number" placeholder="VD: 40" required>
+          </div>
+        </div>
+
+        <!-- Ô NHẬP ẢNH & THƯ VIỆN ẢNH MẪU -->
+        <div class="field-group" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label>Link URL hình ảnh sản phẩm (*) (Nhập URL hoặc chọn ảnh mẫu)</label>
+            <button type="button" onclick="toggleSampleBox()" style="background:none; border:none; color:var(--admin-primary-dark, #d97706); font-size:13px; font-weight:700; cursor:pointer;">
+              <i class="fa-regular fa-images"></i> Xem thư viện ảnh mẫu
+            </button>
+          </div>
+          <input id="pImg" placeholder="https://images.unsplash.com/... (Bấm vào để chọn ảnh có sẵn)" onfocus="openSampleBox()" oninput="handleManualImgInput(this.value)" required>
+
+          <div class="img-preview-box" id="imgPreviewWrap">
+            <img id="imgPreviewTag" src="" alt="Ảnh xem trước">
+            <span style="font-size:13px; color:#16a34a; font-weight:700;"><i class="fa-solid fa-check"></i> Ảnh đã sẵn sàng sử dụng</span>
+          </div>
+
+          <div class="sample-images-grid" id="sampleImagesGrid" style="display: none;"></div>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 24px;">
+          <label>Mô tả chi tiết đồ uống</label>
+          <textarea id="pDesc" rows="3" placeholder="Hương vị thanh mát từ cam vàng và đào giòn, vị ngọt dịu sảng khoái..."></textarea>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button class="btn-primary" type="submit" id="btnProdSubmit">
+            <i class="fa-solid fa-plus"></i> Thêm Mới Sản Phẩm
+          </button>
+          <button type="button" id="btnProdCancel" onclick="resetProdForm()" style="display:none; padding:12px 20px; border:none; background:#e2e8f0; color:#334155; font-weight:700; border-radius:10px; cursor:pointer;">
+            <i class="fa-solid fa-xmark"></i> Hủy Sửa
+          </button>
+        </div>
+      </form>
+
+      <!-- DANH SÁCH SẢN PHẨM -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #1e293b;"><i class="fa-solid fa-list-check"></i> Danh Sách Sản Phẩm Đang Bán</h2>
+      </div>
+
+      <div class="admin-table-card">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;">Hình Ảnh</th>
+              <th>Tên Món</th>
+              <th>Danh Mục</th>
+              <th>Đơn Giá</th>
+              <th>Tồn Kho</th>
+              <th style="width: 170px;">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="prodTbody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script>
+    const sampleImageList = [
+      { name: "Cà phê phin/muối", url: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=400&q=80" },
+      { name: "Latte Hạnh Nhân", url: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=400&q=80" },
+      { name: "Latte Caramel", url: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=400&q=80" },
+      { name: "Caramel Macchiato", url: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=400&q=80" },
+      { name: "Cold Brew Cam Vàng", url: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=400&q=80" },
+      { name: "Trà Đào Cam Sả", url: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80" },
+      { name: "Trà Mãng Cầu", url: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80" },
+      { name: "Trà Dâu Tây", url: "https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=400&q=80" },
+      { name: "Trà Ổi Hồng", url: "https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?auto=format&fit=crop&w=400&q=80" },
+      { name: "Sinh Tố Bơ Hạt Điều", url: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=400&q=80" },
+      { name: "Matcha Đá Xay", url: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=400&q=80" },
+      { name: "Chocolate Cookie", url: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=400&q=80" },
+      { name: "Nước Ép Cam Táo", url: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=400&q=80" },
+      { name: "Bánh Croissant Bơ Tỏi", url: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80" }
+    ];
+
+    function initSampleImages() {
+      const grid = document.getElementById("sampleImagesGrid");
+      grid.innerHTML = sampleImageList.map(item => `
+        <img src="${item.url}" class="sample-img-item" title="${item.name}" onclick="pickSampleImg('${item.url}', this)">
+      `).join('');
+    }
+
+    function openSampleBox() {
+      document.getElementById("sampleImagesGrid").style.display = "grid";
+    }
+
+    function toggleSampleBox() {
+      const grid = document.getElementById("sampleImagesGrid");
+      grid.style.display = grid.style.display === "none" ? "grid" : "none";
+    }
+
+    function pickSampleImg(url, imgElement) {
+      document.getElementById("pImg").value = url;
+      document.querySelectorAll(".sample-img-item").forEach(el => el.classList.remove("selected"));
+      if (imgElement) imgElement.classList.add("selected");
+      showPreview(url);
+    }
+
+    function handleManualImgInput(val) {
+      showPreview(val);
+    }
+
+    function showPreview(url) {
+      const wrap = document.getElementById("imgPreviewWrap");
+      const img = document.getElementById("imgPreviewTag");
+      if (url && url.trim().length > 10) {
+        img.src = url.trim();
+        wrap.style.display = "inline-flex";
+      } else {
+        wrap.style.display = "none";
+      }
+    }
+
+    async function loadCategories() {
+      let cats = await apiGetCategories();
+      if (!cats || cats.length === 0) {
+        try {
+          const res = await fetch("../db.json");
+          const data = await res.json();
+          cats = data.categories || [];
+        } catch (e) {}
+      }
+      document.getElementById("pCat").innerHTML = cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    async function renderProducts() {
+      let prods = await apiGetProducts();
+      let cats = await apiGetCategories();
+
+      if (!prods || prods.length === 0) {
+        try {
+          const res = await fetch("../db.json");
+          const data = await res.json();
+          prods = data.products || [];
+          cats = data.categories || [];
+        } catch (e) {}
+      }
+
+      function getCatName(catId) {
+        const found = cats.find(c => c.id === catId);
+        return found ? found.name : catId;
+      }
+
+      document.getElementById('prodTbody').innerHTML = prods.map(p => `
+        <tr>
+          <td>
+            <img src="${p.image}" style="width:52px;height:52px;border-radius:10px;object-fit:cover;box-shadow:0 3px 8px rgba(0,0,0,0.08);" alt="${p.name}">
+          </td>
+          <td>
+            <div style="font-weight:700;font-size:15px;color:#0f172a;">${p.name}</div>
+            <div style="font-size:12px;color:#94a3b8;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.desc || ''}</div>
+          </td>
+          <td>
+            <span class="badge-cat">${getCatName(p.category)}</span>
+          </td>
+          <td>
+            <strong style="color:#b45309;font-size:15px;">${Number(p.price).toLocaleString('vi-VN')} đ</strong>
+          </td>
+          <td>
+            <span style="font-weight:600;color:${p.quantity > 0 ? '#16a34a' : '#dc2626'};">
+              ${p.quantity > 0 ? `${p.quantity} ly` : 'Hết hàng'}
+            </span>
+          </td>
+          <td>
+            <button class="btn-action-edit" onclick="editProduct('${p.id}')">
+              <i class="fa-solid fa-pen-to-square"></i> Sửa
+            </button>
+            <button class="btn-action-del" onclick="deleteProduct('${p.id}')">
+              <i class="fa-solid fa-trash-can"></i> Xóa
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleProductSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById("pName").value.trim();
+      const cat = document.getElementById("pCat").value;
+      const price = Number(document.getElementById("pPrice").value);
+      const qty = Number(document.getElementById("pQty").value);
+      const img = document.getElementById("pImg").value.trim();
+      const desc = document.getElementById("pDesc").value.trim();
+      const editId = document.getElementById("editProdId").value;
+
+      if (!name || isNaN(price) || price <= 0 || isNaN(qty) || qty < 0 || !img) {
+        return alert("❌ Dữ liệu không hợp lệ! Vui lòng điền đủ các trường.");
+      }
+
+      const prodData = {
+        name,
+        category: cat,
+        price,
+        quantity: qty,
+        image: img,
+        badge: "Mới",
+        desc
+      };
+
+      if (editId) {
+        await apiUpdateProduct(editId, prodData);
+        alert("✅ Đã cập nhật sản phẩm thành công!");
+      } else {
+        await apiAddProduct(prodData);
+        alert("✅ Đã thêm mới sản phẩm thành công!");
+      }
+
+      resetProdForm();
+      await renderProducts();
+    }
+
+    async function editProduct(id) {
+      let prods = await apiGetProducts();
+      if (!prods || prods.length === 0) {
+        const res = await fetch("../db.json");
+        const data = await res.json();
+        prods = data.products || [];
+      }
+      const target = prods.find(item => String(item.id) === String(id));
+      if (!target) return;
+
+      document.getElementById("prodFormTitle").innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:#2563eb;"></i> Chỉnh Sửa Thông Tin Sản Phẩm`;
+      document.getElementById("btnProdSubmit").innerHTML = `<i class="fa-solid fa-check"></i> Cập Nhật Sản Phẩm`;
+      document.getElementById("btnProdCancel").style.display = "inline-flex";
+
+      document.getElementById("editProdId").value = target.id;
+      document.getElementById("pName").value = target.name;
+      document.getElementById("pCat").value = target.category;
+      document.getElementById("pPrice").value = target.price;
+      document.getElementById("pQty").value = target.quantity;
+      document.getElementById("pImg").value = target.image;
+      document.getElementById("pDesc").value = target.desc || "";
+
+      showPreview(target.image);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi hệ thống?")) return;
+      await apiDeleteProduct(id);
+      alert("✅ Đã xóa sản phẩm thành công!");
+      await renderProducts();
+    }
+
+    function resetProdForm() {
+      document.getElementById("editProdId").value = "";
+      document.getElementById("pName").value = "";
+      document.getElementById("pPrice").value = "";
+      document.getElementById("pQty").value = "";
+      document.getElementById("pImg").value = "";
+      document.getElementById("pDesc").value = "";
+      document.getElementById("imgPreviewWrap").style.display = "none";
+      document.getElementById("sampleImagesGrid").style.display = "none";
+      document.querySelectorAll(".sample-img-item").forEach(el => el.classList.remove("selected"));
+
+      document.getElementById("prodFormTitle").innerHTML = `<i class="fa-solid fa-circle-plus" style="color:var(--admin-primary-dark, #d97706);"></i> Thêm Mới Sản Phẩm Đồ Uống`;
+      document.getElementById("btnProdSubmit").innerHTML = `<i class="fa-solid fa-plus"></i> Thêm Mới Sản Phẩm`;
+      document.getElementById("btnProdCancel").style.display = "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadCategories();
+      await renderProducts();
+      initSampleImages();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshDrinks - Chi Tiết Đồ Uống</title>
+  <meta name="description" content="Xem chi tiết sản phẩm tại FreshDrinks - Thành phần, hương vị, dung tích và đặt giao nhanh 20 phút." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://freshdrinks.vn/san-pham/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="product" />
+  <meta property="og:title" content="FreshDrinks - Chi Tiết Đồ Uống" />
+  <meta property="og:description" content="Xem chi tiết sản phẩm tại FreshDrinks - Đặt giao nhanh 20 phút." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=1200&q=80" />
+  <meta property="og:site_name" content="FreshDrinks Artisan" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .product-tabs-wrapper {
+      margin-top: 40px;
+      background: #ffffff;
+      border-radius: var(--radius-lg, 16px);
+      padding: 30px;
+      border: 1px solid var(--border, #e2e8f0);
+      box-shadow: var(--shadow, 0 10px 25px -5px rgba(0,0,0,0.05));
+    }
+    .tabs-header {
+      display: flex;
+      gap: 16px;
+      border-bottom: 2px solid var(--border, #e2e8f0);
+      margin-bottom: 24px;
+    }
+    .tab-item-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-muted, #64748b);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-item-btn.active {
+      color: #000;
+      border-bottom-color: var(--primary, #f9d342);
+    }
+    .tab-content-panel {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #334155;
+    }
+    .tab-content-panel h3 {
+      font-size: 18px;
+      color: #0f172a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-feature-list {
+      margin: 16px 0;
+      padding-left: 20px;
+    }
+    .tab-feature-list li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- THANH CHỌN MÀN HÌNH -->
+  <div class="demo-top-bar">
+    <div class="demo-top-container">
+      <div class="demo-nav-group">
+        <span class="demo-title">
+          <i class="fa-solid fa-layer-group"></i> Chọn màn hình:
+        </span>
+        <a href="index.html" class="demo-btn">Trang chủ</a>
+        <a href="products.html" class="demo-btn">Thực đơn & Lọc</a>
+        <a href="login.html" class="demo-btn">Đăng ký / Đăng nhập</a>
+        <a href="cart.html" class="demo-btn">Giỏ hàng</a>
+        <a href="checkout.html" class="demo-btn">Thanh toán</a>
+      </div>
+      <a href="admin/index.html" class="demo-admin-btn">
+        <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
+      </a>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fa-solid fa-mug-hot"></i> FreshDrinks</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="products.html">Thực đơn</a></li>
+        <li><a id="authNavLink" href="login.html">Tài khoản</a></li>
+      </ul>
+      <a href="cart.html" class="cart-btn">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="products.html" class="btn-primary" style="background:#e2e8f0; color:#1f2937; margin-bottom:24px;">
+      <i class="fa-solid fa-arrow-left"></i> Quay lại Thực đơn
+    </a>
+
+    <!-- PHẦN 1: ẢNH & THÔNG TIN ĐẶT MÓN -->
+    <div class="table-box" style="display:grid; grid-template-columns:1fr 1fr; gap:36px;" id="detailContainer">
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 26px;"></i>
+        <p style="margin-top: 10px;">Đang tải chi tiết đồ uống...</p>
+      </div>
+    </div>
+
+    <!-- PHẦN 2: KHU VỰC MÔ TẢ CHI TIẾT SẢN PHẨM -->
+    <div class="product-tabs-wrapper">
+      <div class="tabs-header">
+        <button class="tab-item-btn active" onclick="switchDetailTab('desc', this)">
+          <i class="fa-solid fa-align-left"></i> Mô Tả Chi Tiết
+        </button>
+        <button class="tab-item-btn" onclick="switchDetailTab('recipe', this)">
+          <i class="fa-solid fa-leaf"></i> Thành Phần & Pha Chế
+        </button>
+        <button class="tab-item-btn" onclick="switchDetailTab('storage', this)">
+          <i class="fa-solid fa-shield-heart"></i> Hướng Dẫn Sử Dụng
+        </button>
+      </div>
+
+      <!-- Tab 1: Mô tả -->
+      <div id="tab-desc" class="tab-content-panel">
+        <h3><i class="fa-solid fa-circle-check" style="color:var(--primary-dark,#d97706);"></i> Đặc điểm hương vị nổi bật</h3>
+        <p id="fullDescText" style="font-size:16px; margin-bottom:14px;"></p>
+        <ul class="tab-feature-list">
+          <li><strong>Nguyên liệu cao cấp:</strong> Sử dụng 100% nông sản sạch, hạt cà phê tuyển chọn và cốt trà nguyên lá tươi ngon mỗi ngày[cite: 3].</li>
+          <li><strong>Hương vị độc quyền:</strong> Công thức pha chế độc quyền chuẩn tỷ lệ giúp giữ trọn vẹn hậu vị đậm đà và độ thanh mát sảng khoái.</li>
+          <li><strong>Tốt cho sức khỏe:</strong> Vị ngọt dịu tự nhiên, không sử dụng chất tạo hương hay phụ gia công nghiệp.</li>
+        </ul>
+      </div>
+
+      <!-- Tab 2: Thành phần -->
+      <div id="tab-recipe" class="tab-content-panel" style="display:none;">
+        <h3><i class="fa-solid fa-flask" style="color:var(--primary-dark,#d97706);"></i> Chi tiết nguyên liệu</h3>
+        <p id="fullIngredientsText" style="margin-bottom:12px;"></p>
+        <p>Được chiết xuất và bảo quản ở nhiệt độ tiêu chuẩn (4°C - 8°C) để giữ nguyên vitamin và hương thơm tự nhiên.</p>
+      </div>
+
+      <!-- Tab 3: Hướng dẫn sử dụng & bảo quản -->
+      <div id="tab-storage" class="tab-content-panel" style="display:none;">
+        <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary-dark,#d97706);"></i> Thời gian & bảo quản tốt nhất</h3>
+        <ul class="tab-feature-list">
+          <li>Nên thưởng thức ngay sau khi mở nắp hoặc dùng trong vòng <strong>2 giờ</strong> khi còn đá để giữ vị ngon trọn vẹn nhất.</li>
+          <li>Nếu chưa dùng ngay, vui lòng bảo quản trong ngăn mát tủ lạnh (dưới 10°C) và dùng hết trong ngày.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>FreshDrinks Artisan</h3>
+        <p>Chuỗi cà phê & trà trái cây giải khát chất lượng cao mang lại nguồn cảm hứng và năng lượng tích cực[cite: 3].</p>
+      </div>
+      <div class="footer-column">
+        <h3>Liên kết nhanh</h3>
+        <a href="index.html">Trang chủ[cite: 3]</a>
+        <a href="products.html">Thực đơn đồ uống[cite: 3]</a>
+        <a href="cart.html">Giỏ hàng của bạn[cite: 3]</a>
+      </div>
+      <div class="footer-column">
+        <h3>Liên hệ</h3>
+        <p>Hotline: 1900 123 456[cite: 3]</p>
+        <p>Email: contact@freshdrinks.com[cite: 3]</p>
+        <p>Địa chỉ: Hải Châu, TP. Đà Nẵng[cite: 3]</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 FreshDrinks Artisan Coffee & Tea. All rights reserved.[cite: 3]</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let currentProduct = null;
+
+    async function loadProductDetail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const prodId = urlParams.get('id');
+
+      let prods = [];
+      let cats = [];
+
+      try {
+        prods = await apiGetProducts();
+        cats = await apiGetCategories();
+      } catch (err) {}
+
+      // Dự phòng nạp thẳng từ db.json
+      if (!prods || prods.length === 0) {
+        try {
+          const res = await fetch("db.json");
+          const data = await res.json();
+          prods = data.products || [];
+          cats = data.categories || [];
+        } catch (e) {}
+      }
+
+      currentProduct = prods.find(item => String(item.id) === String(prodId)) || prods[0];
+      const container = document.getElementById('detailContainer');
+
+      if (!currentProduct) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+            <h2>❌ Không tìm thấy sản phẩm!</h2>
+            <p style="color:#64748b; margin-top:10px;">Sản phẩm không tồn tại hoặc đã được cập nhật.</p>
+            <a href="products.html" class="btn-primary" style="margin-top:20px; display:inline-block;">Về danh sách món</a>
+          </div>
+        `;
+        return;
+      }
+
+      const p = currentProduct;
+      const foundCat = cats.find(c => c.id === p.category);
+      const catName = foundCat ? foundCat.name : p.category;
+
+      // 1. Đổ dữ liệu phần trên (Ảnh và cụm nút Mua Ngay / Thêm Giỏ)
+      container.innerHTML = `
+        <div style="background:#fafaf9; border-radius:12px; padding:20px; display:flex; align-items:center; justify-content:center;">
+          <img src="${p.image}" style="width:100%; max-height:400px; object-fit:cover; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.06);" alt="${p.name}">
+        </div>
+        <div>
+          <span class="card-cat" style="font-size:13px; font-weight:800; color:var(--primary-dark,#d97706); text-transform:uppercase;">
+            DANH MỤC: ${catName}
+          </span>
+          <h1 style="font-size:28px; margin:10px 0 14px; font-weight:800; color:#0f172a;">${p.name}</h1>
+          <p style="font-size:26px; font-weight:800; color:#b45309; margin-bottom:16px;">
+            ${Number(p.price).toLocaleString('vi-VN')} đ
+          </p>
+          <p style="color:#475569; margin-bottom:20px; font-size:15px; line-height:1.7;">
+            ${p.desc || 'Thức uống được pha chế thủ công từ các nguyên liệu tươi mới, mang lại hương vị thơm ngon và chuẩn gu mỗi ngày.'}
+          </p>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:24px;">
+            <p style="margin-bottom:8px;">🌿 <strong>Thành phần:</strong> ${p.ingredients || '100% nguyên liệu tươi sạch, trà/cà phê nguyên chất.'}</p>
+            <p style="margin-bottom:8px;">🥤 <strong>Dung tích:</strong> ${p.volume || '500ml (Size L)'}</p>
+            <p>📦 <strong>Tồn kho:</strong> ${p.quantity > 0 ? `<span style="color:#16a34a; font-weight:bold;">Còn hàng (${p.quantity} ly)</span>` : '<span style="color:#ef4444; font-weight:bold;">Tạm hết hàng</span>'}</p>
+          </div>
+
+          <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+            <div class="qty-pill" style="height:46px; border:1.5px solid var(--border,#e2e8f0); border-radius:8px; display:inline-flex; align-items:center;">
+              <button type="button" onclick="let q=document.getElementById('dQty'); if(q.value>1) q.value--;" style="padding:0 14px; border:none; background:none; font-size:16px; font-weight:bold; cursor:pointer;">-</button>
+              <input id="dQty" type="number" value="1" min="1" max="${p.quantity}" style="width:40px; border:none; text-align:center; font-weight:bold; outline:none;" readonly>
+              <button type="button" onclick="let q=document.getElementById('dQty'); if(q.value<${p.quantity}) q.value++;" style="padding:0 14px; border:none; background:none; font-size:16px; font-weight:bold; cursor:pointer;">+</button>
+            </div>
+
+            <button class="btn-primary" style="height:46px; padding:0 22px;" onclick="handleAddToCart()">
+              <i class="fa-solid fa-cart-shopping"></i> Thêm Vào Giỏ
+            </button>
+
+            <button type="button" onclick="handleBuyNow()" style="
+              height:46px; 
+              padding:0 22px; 
+              background:#18181b; 
+              color:#fff; 
+              border:none; 
+              border-radius:10px; 
+              font-weight:700; 
+              cursor:pointer; 
+              display:inline-flex; 
+              align-items:center; 
+              gap:8px; 
+              transition:0.2s;
+            ">
+              <i class="fa-solid fa-bolt"></i> Mua Ngay
+            </button>
+          </div>
+        </div>
+      `;
+
+      // 2. Đổ dữ liệu chi tiết vào khung mô tả bên dưới
+      const fullDesc = p.desc 
+        ? `${p.desc} Món ${p.name} là một trong những sản phẩm được yêu thích nhất tại FreshDrinks, mang lại trải nghiệm vị giác cân bằng và cung cấp năng lượng tích cực cho ngày dài học tập, làm việc[cite: 3].` 
+        : `Món ${p.name} được chế biến từ các nguyên liệu tươi mới, đảm bảo an toàn vệ sinh thực phẩm và hương vị thơm mát tự nhiên.`;
+
+      document.getElementById('fullDescText').textContent = fullDesc;
+      document.getElementById('fullIngredientsText').textContent = p.ingredients || "Trà / Cà phê nguyên chất, sữa tươi thanh trùng, đường mía tự nhiên, trái cây tươi theo mùa.";
+    }
+
+    function switchDetailTab(tabName, btn) {
+      document.querySelectorAll('.tab-item-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.getElementById('tab-desc').style.display = tabName === 'desc' ? 'block' : 'none';
+      document.getElementById('tab-recipe').style.display = tabName === 'recipe' ? 'block' : 'none';
+      document.getElementById('tab-storage').style.display = tabName === 'storage' ? 'block' : 'none';
+    }
+
+    function handleAddToCart() {
+      if (!currentProduct) return;
+      const qty = Number(document.getElementById('dQty').value) || 1;
+      const cart = getCart();
+      const existing = cart.find(i => String(i.product.id) === String(currentProduct.id));
+
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        cart.push({ product: currentProduct, quantity: qty });
+      }
+
+      saveCart(cart);
+      if (typeof updateCartBadge === "function") updateCartBadge();
+      alert(`✅ Đã thêm ${qty} ly "${currentProduct.name}" vào giỏ hàng!`);
+    }
+
+    function handleBuyNow() {
+      if (!currentProduct) return;
+      const qty = Number(document.getElementById('dQty').value) || 1;
+      const cart = getCart();
+      const existing = cart.find(i => String(i.product.id) === String(currentProduct.id));
+
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        cart.push({ product: currentProduct, quantity: qty });
+      }
+
+      saveCart(cart);
+      if (typeof updateCartBadge === "function") updateCartBadge();
+      window.location.href = "checkout.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", loadProductDetail);
+  </script>
+</body>
+</html>

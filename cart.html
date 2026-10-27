@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshDrinks - Giỏ Hàng Mua Sắm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- TẦNG 1: THANH ĐIỀU HƯỚNG MÀN HÌNH -->
+  <div class="demo-top-bar">
+    <div class="demo-top-container">
+      <div class="demo-nav-group">
+        <span class="demo-title"><i class="fa-solid fa-layer-group"></i> Chọn màn hình:</span>
+        <a href="index.html" class="demo-btn">Trang chủ</a>
+        <a href="products.html" class="demo-btn">Thực đơn & Lọc</a>
+        <a href="login.html" class="demo-btn">Đăng ký / Đăng nhập</a>
+        <a href="cart.html" class="demo-btn active">Giỏ hàng</a>
+        <a href="checkout.html" class="demo-btn">Thanh toán</a>
+      </div>
+      <a href="admin/index.html" class="demo-admin-btn">
+        <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
+      </a>
+    </div>
+  </div>
+
+  <!-- TẦNG 2: HEADER CHÍNH -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fa-solid fa-mug-hot"></i> FreshDrinks</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="products.html">Sản phẩm</a></li>
+        <li><a id="authNavLink" href="login.html">Tài khoản</a></li>
+      </ul>
+      <a href="cart.html" class="cart-btn">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="sec-title" style="border-left: 4px solid var(--primary); padding-left: 12px;">Giỏ Hàng Của Bạn</h1>
+    <div class="cart-layout" id="cartContainer"></div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>FreshDrinks Artisan</h3>
+        <p>Chuỗi cà phê & trà trái cây giải khát chất lượng cao mang lại nguồn cảm hứng và năng lượng tích cực[cite: 3].</p>
+      </div>
+      <div class="footer-column">
+        <h3>Liên kết nhanh</h3>
+        <a href="index.html">Trang chủ[cite: 3]</a>
+        <a href="products.html">Thực đơn đồ uống[cite: 3]</a>
+        <a href="cart.html">Giỏ hàng của bạn[cite: 3]</a>
+      </div>
+      <div class="footer-column">
+        <h3>Liên hệ</h3>
+        <p>Hotline: 1900 123 456[cite: 3]</p>
+        <p>Email: contact@freshdrinks.com[cite: 3]</p>
+        <p>Địa chỉ: Hải Châu, TP. Đà Nẵng[cite: 3]</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 FreshDrinks Artisan Coffee & Tea. All rights reserved.[cite: 3]</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function changeItemQuantity(id, delta) {
+      const cart = getCart();
+      const item = cart.find(i => i.product.id == id);
+      if (!item) return;
+
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        saveCart(cart.filter(i => i.product.id != id));
+      } else {
+        saveCart(cart);
+      }
+      renderCart();
+      updateCartBadge();
+    }
+
+    function renderCart() {
+      const cart = getCart();
+      const wrap = document.getElementById("cartContainer");
+
+      if (!cart || cart.length === 0) {
+        wrap.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:60px 20px; background:#fff; border-radius:16px; border:1px solid #e2e8f0;">
+            <i class="fa-solid fa-basket-shopping" style="font-size:64px; color:#cbd5e1; margin-bottom:16px;"></i>
+            <h2>Giỏ hàng của bạn đang trống!</h2>
+            <p style="color:#64748b; margin:10px 0 24px;">Hãy thêm những ly nước giải khát thanh mát từ thực đơn nhé.</p>
+            <a href="products.html" class="btn-primary">Xem Thực Đơn Ngay</a>
+          </div>
+        `;
+        return;
+      }
+
+      const total = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
+
+      wrap.innerHTML = `
+        <div class="table-box">
+          <table class="cart-table">
+            <thead>
+              <tr><th>Món Đồ Uống</th><th>Đơn Giá</th><th>Số Lượng</th><th>Thành Tiền</th><th></th></tr>
+            </thead>
+            <tbody>
+              ${cart.map(i => `
+                <tr>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:14px;">
+                      <img src="${i.product.image}" style="width:55px;height:55px;border-radius:10px;object-fit:cover; border:1px solid #e2e8f0;">
+                      <div>
+                        <strong style="font-size:15px; color:#0f172a;">${i.product.name}</strong>
+                        <div style="font-size:12px;color:#64748b;margin-top:2px;">${i.product.desc || ''}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>${i.product.price.toLocaleString('vi-VN')} đ</td>
+                  <td>
+                    <div class="qty-pill">
+                      <button type="button" onclick="changeItemQuantity(${i.product.id}, -1)">-</button>
+                      <span>${i.quantity}</span>
+                      <button type="button" onclick="changeItemQuantity(${i.product.id}, 1)">+</button>
+                    </div>
+                  </td>
+                  <td><strong style="color:#b45309;">${(i.product.price * i.quantity).toLocaleString('vi-VN')} đ</strong></td>
+                  <td>
+                    <button onclick="changeItemQuantity(${i.product.id}, -999)" style="color:#ef4444; border:none; background:none; cursor:pointer; font-size:16px;" title="Xóa món">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div class="summary-box">
+          <h3 style="font-size:18px; font-weight:800; margin-bottom:18px;">Tóm Tắt Đơn Hàng</h3>
+          <div class="sum-line"><span>Tạm tính</span><strong>${total.toLocaleString('vi-VN')} đ</strong></div>
+          <div class="sum-line"><span>Phí vận chuyển</span><span style="color:#16a34a;font-weight:bold;">Miễn phí</span></div>
+          <div class="sum-line total"><span>Tổng thanh toán</span><span>${total.toLocaleString('vi-VN')} đ</span></div>
+          <a href="checkout.html" class="btn-primary btn-full" style="padding:14px; font-size:16px;">
+            <i class="fa-solid fa-credit-card"></i> Tiến Hành Thanh Toán
+          </a>
+        </div>
+      `;
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

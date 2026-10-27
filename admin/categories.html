@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Quản lý Danh mục</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h3><i class="fa-solid fa-mug-hot"></i> FreshDrinks</h3>
+      <ul class="admin-nav">
+        <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="categories.html" class="active"><i class="fa-solid fa-tags"></i> Quản lý Danh mục </a></li>
+        <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i> Quản lý Sản phẩm</a></li>
+        <li><a href="users.html"><i class="fa-solid fa-users"></i> Khách hàng</a></li>
+        <li><a href="orders.html"><i class="fa-solid fa-receipt"></i> Đơn hàng</a></li>
+        <li><a href="seo.html"><i class="fa-solid fa-magnifying-glass-chart"></i> Cấu hình SEO & FB</a></li>
+        <li><a href="../index.html" style="color:#ef4444; margin-top: auto;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Thoát Admin</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-view-panel">
+      <div class="admin-header-title">
+        <h1 id="catTitle"><i class="fa-solid fa-circle-plus" style="color:var(--admin-primary-dark);"></i> Thêm Mới Danh Mục Đồ Uống</h1>
+      </div>
+      
+      <!-- FORM THÊM MỚI / CHỈNH SỬA -->
+      <form class="form-card" style="max-width: 600px; margin-bottom: 32px;" onsubmit="handleCategorySubmit(event)">
+        <input type="hidden" id="editCatId">
+        <div class="field-group" style="margin-bottom: 16px;">
+          <label>Mã Danh Mục (ID) (*)</label>
+          <input id="catId" placeholder="VD: coffee, tea, juice (chữ thường không dấu)" required>
+        </div>
+        <div class="field-group" style="margin-bottom: 20px;">
+          <label>Tên Danh Mục Hiển Thị (*)</label>
+          <input id="catName" placeholder="VD: Nước ép trái cây tươi" required>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button class="btn-primary" type="submit" id="btnCatSubmit">
+            <i class="fa-solid fa-check"></i> Thêm Danh Mục
+          </button>
+          <button type="button" id="btnCatCancel" onclick="resetCatForm()" style="display:none; padding:12px 20px; border:none; background:#e2e8f0; color:#334155; font-weight:700; border-radius:10px; cursor:pointer;">
+            <i class="fa-solid fa-xmark"></i> Hủy Sửa
+          </button>
+        </div>
+      </form>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #1e293b;"><i class="fa-solid fa-list"></i> Tất Cả Danh Mục Hiện Có</h2>
+      </div>
+
+      <div class="admin-table-card">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th style="width: 200px;">Mã Danh Mục </th>
+              <th>Tên Danh Mục</th>
+              <th style="width: 180px;">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="catTbody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script>
+    async function renderCategories() {
+      const cats = await apiGetCategories();
+      document.getElementById('catTbody').innerHTML = cats.map(c => `
+        <tr>
+          <td><code style="background:#f1f5f9; padding:4px 8px; border-radius:6px; font-weight:700; color:#0f172a;">${c.id}</code></td>
+          <td><strong style="font-size:15px; color:#1e293b;">${c.name}</strong></td>
+          <td>
+            <button class="btn-action-edit" onclick="editCategory('${c.id}')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+            <button class="btn-action-del" onclick="deleteCategory('${c.id}')"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleCategorySubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById("catId").value.trim().toLowerCase();
+      const name = document.getElementById("catName").value.trim();
+      const editId = document.getElementById("editCatId").value;
+
+      if (!id || !name) return alert("❌ Vui lòng nhập đầy đủ Mã ID và Tên danh mục!");
+
+      const cats = await apiGetCategories();
+
+      if (editId) {
+        await apiUpdateCategory(editId, { id: editId, name });
+        alert("✅ Đã cập nhật danh mục vào db.json!");
+      } else {
+        if (cats.some(c => c.id === id)) return alert("❌ Mã ID danh mục này đã tồn tại!");
+        await apiAddCategory({ id, name });
+        alert("✅ Đã thêm mới danh mục vào db.json!");
+      }
+
+      resetCatForm();
+      await renderCategories();
+    }
+
+    async function editCategory(id) {
+      const cats = await apiGetCategories();
+      const target = cats.find(c => c.id === id);
+      if (!target) return;
+
+      document.getElementById("editCatId").value = target.id;
+      document.getElementById("catId").value = target.id;
+      document.getElementById("catId").disabled = true;
+      document.getElementById("catName").value = target.name;
+
+      document.getElementById("catTitle").innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:#2563eb;"></i> Chỉnh Sửa Danh Mục: ${target.name}`;
+      document.getElementById("btnCatSubmit").innerHTML = `<i class="fa-solid fa-check"></i> Lưu Thay Đổi`;
+      document.getElementById("btnCatCancel").style.display = "inline-flex";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetCatForm() {
+      document.getElementById("editCatId").value = "";
+      document.getElementById("catId").value = "";
+      document.getElementById("catId").disabled = false;
+      document.getElementById("catName").value = "";
+      document.getElementById("catTitle").innerHTML = `<i class="fa-solid fa-circle-plus" style="color:var(--admin-primary-dark);"></i> Thêm Mới Danh Mục Đồ Uống`;
+      document.getElementById("btnCatSubmit").innerHTML = `<i class="fa-solid fa-check"></i> Thêm Danh Mục`;
+      document.getElementById("btnCatCancel").style.display = "none";
+    }
+
+    async function deleteCategory(id) {
+      if (!confirm(`Bạn có chắc muốn xóa danh mục [${id}] khỏi db.json?`)) return;
+      await apiDeleteCategory(id);
+      alert("✅ Đã xóa thành công!");
+      await renderCategories();
+    }
+
+    document.addEventListener("DOMContentLoaded", renderCategories);
+  </script>
+</body>
+</html> 

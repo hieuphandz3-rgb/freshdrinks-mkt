@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshDrinks - Cà Phê Pha Máy & Trà Trái Cây Đậm Gu | Giao Nhanh 20 Phút</title>
+  <meta name="description" content="Thưởng thức cà phê rang mộc nguyên chất, trà đào cam sả và các loại đồ uống thanh mát tại FreshDrinks. Đặt hàng online giao nhanh 20 phút." />
+  <meta name="keywords" content="cà phê, trà trái cây, đồ uống, FreshDrinks, giao nhanh, da nang, cà phê pha máy, trà đào cam sả" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="FreshDrinks Artisan Coffee & Tea" />
+  <link rel="canonical" href="https://freshdrinks.vn/" />
+
+  <!-- Google Search Console verification -->
+  <meta name="google-site-verification" content="Abc123XyZ456FreshDrinksToken2026" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FreshDrinks - Cà Phê Pha Máy & Trà Trái Cây Đậm Gu" />
+  <meta property="og:description" content="Thưởng thức cà phê rang mộc nguyên chất, trà đào cam sả và các loại đồ uống thanh mát tại FreshDrinks. Đặt hàng online giao nhanh 20 phút." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=80" />
+  <meta property="og:url" content="https://freshdrinks.vn/" />
+  <meta property="og:site_name" content="FreshDrinks Artisan" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FreshDrinks - Cà Phê Pha Máy & Trà Trái Cây Đậm Gu" />
+  <meta name="twitter:description" content="Thưởng thức cà phê rang mộc nguyên chất, trà đào cam sả và các loại đồ uống thanh mát tại FreshDrinks." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=80" />
+
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FoodEstablishment",
+    "name": "FreshDrinks Artisan Coffee & Tea",
+    "image": "https://freshdrinks.vn/logo.png",
+    "telephone": "1900 123 456",
+    "email": "contact@freshdrinks.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Hải Châu",
+      "addressLocality": "Đà Nẵng",
+      "addressCountry": "VN"
+    },
+    "priceRange": "$$",
+    "servesCuisine": "Coffee, Tea, Fruit Drinks",
+    "url": "https://freshdrinks.vn/"
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- TẦNG 1: THANH ĐIỀU HƯỚNG MÀN HÌNH -->
+  <div class="demo-top-bar">
+    <div class="demo-top-container">
+      <div class="demo-nav-group">
+        <span class="demo-title">
+          <i class="fa-solid fa-layer-group"></i> Chọn màn hình:
+        </span>
+        <a href="index.html" class="demo-btn active">Trang chủ</a>
+        <a href="products.html" class="demo-btn">Thực đơn & Lọc</a>
+        <a href="login.html" class="demo-btn">Đăng ký / Đăng nhập</a>
+        <a href="cart.html" class="demo-btn">Giỏ hàng</a>
+        <a href="checkout.html" class="demo-btn">Thanh toán</a>
+      </div>
+
+      <a href="admin/index.html" class="demo-admin-btn">
+        <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
+      </a>
+    </div>
+  </div>
+
+  <!-- TẦNG 2: HEADER CHÍNH -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <i class="fa-solid fa-mug-hot"></i> FreshDrinks
+      </a>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="active">Trang chủ</a></li>
+        <li><a href="products.html">Sản phẩm</a></li>
+        <li><a id="authNavLink" href="login.html">Tài khoản</a></li>
+      </ul>
+      <a href="cart.html" class="cart-btn">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </header>
+
+  <section class="hero-box">
+    <div class="hero-slider-container">
+
+      <!-- Slide 1 -->
+      <div class="hero-slide active">
+        <div class="hero-grid">
+          <div>
+            <span class="hero-tag">🌿 100% Cà phê Arabica & Trái cây tươi</span>
+            <h1>Năng Lượng Tươi Mới<br/>Cùng <span>FreshDrinks</span></h1>
+            <p>Thưởng thức bộ sưu tập cà phê máy thượng hạng và các dòng trà trái cây giải nhiệt mát lạnh chuẩn gu mỗi ngày.</p>
+            <a href="products.html" class="btn-primary">Xem Toàn Bộ Menu <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="hero-img-wrap">
+            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=700&q=80" alt="FreshDrinks Hero">
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="hero-slide">
+        <div class="hero-grid">
+          <div>
+            <span class="hero-tag">☕ Đậm Vị Nguyên Bản</span>
+            <h1>Cà Phê Pha Máy<br/>Chuẩn Gu <span>Thượng Hạng</span></h1>
+            <p>Hạt cà phê tuyển chọn từ cao nguyên Lâm Đồng, rang mộc giữ trọn hương vị nồng nàn sảng khoái.</p>
+            <a href="products.html" class="btn-primary">Khám Phá Menu <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="hero-img-wrap">
+            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80" alt="FreshDrinks Coffee">
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="hero-slide">
+        <div class="hero-grid">
+          <div>
+            <span class="hero-tag">🍹 Thanh Mát Tự Nhiên</span>
+            <h1>Trà Trái Cây Tươi<br/>Giải Nhiệt <span>Cực Đã</span></h1>
+            <p>Vị trà thanh dịu kết hợp cùng các loại quả nhiệt đới tươi mới mang đến cảm giác giải khát tức thì.</p>
+            <a href="products.html" class="btn-primary">Thưởng Thức Ngay <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="hero-img-wrap">
+            <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=700&q=80" alt="FreshDrinks Fruit Tea">
+          </div>
+        </div>
+      </div>
+
+      <!-- Nút điều hướng slide -->
+      <button class="slider-btn prev-btn" id="heroPrevBtn" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slider-btn next-btn" id="heroNextBtn" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+
+      <!-- Dấu chấm chỉ vị trí slide -->
+      <div class="slider-dots" id="heroDots">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+        <span class="dot" data-index="2"></span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Vùng hiển thị các phần sản phẩm -->
+  <div class="container" id="categorySections"></div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>FreshDrinks Artisan</h3>
+        <p>Chuỗi cà phê & trà trái cây giải khát chất lượng cao mang lại nguồn cảm hứng và năng lượng tích cực.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Liên kết nhanh</h3>
+        <a href="index.html">Trang chủ</a>
+        <a href="products.html">Thực đơn đồ uống</a>
+        <a href="cart.html">Giỏ hàng của bạn</a>
+      </div>
+      <div class="footer-column">
+        <h3>Liên hệ</h3>
+        <p>Hotline: 1900 123 456</p>
+        <p>Email: contact@freshdrinks.com</p>
+        <p>Địa chỉ: Hải Châu, TP. Đà Nẵng</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 FreshDrinks Artisan Coffee & Tea. All rights reserved.</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Hàm Mua Ngay: Thêm món vào giỏ rồi chuyển thẳng sang trang thanh toán checkout.html
+    function buyNow(productId, qty = 1) {
+      const products = typeof getProducts === "function" ? getProducts() : [];
+      const product = products.find(p => p.id == productId);
+      if (!product) return;
+
+      if (product.quantity <= 0) {
+        alert("❌ Rất tiếc, sản phẩm này hiện đã hết hàng trong kho!");
+        return;
+      }
+
+      const cart = typeof getCart === "function" ? getCart() : [];
+      const existing = cart.find(i => i.product.id == productId);
+
+      if (existing) {
+        if (existing.quantity + qty > product.quantity) {
+          alert(`❌ Kho chỉ còn tối đa ${product.quantity} ly cho món này!`);
+          return;
+        }
+        existing.quantity += qty;
+      } else {
+        cart.push({ product, quantity: qty });
+      }
+
+      if (typeof saveCart === "function") saveCart(cart);
+      if (typeof updateCartBadge === "function") updateCartBadge();
+
+      window.location.href = "checkout.html";
+    }
+
+    async function fetchHomeProducts() {
+      let allProds = [];
+      let cats = [];
+
+      // Ưu tiên nạp từ json-server (cổng 3001 hoặc 3000)
+      const endpoints = ["http://localhost:3001", "http://localhost:3000"];
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(`${url}/products`);
+          if (res.ok) {
+            allProds = await res.json();
+            try {
+              const resCat = await fetch(`${url}/categories`);
+              if (resCat.ok) cats = await resCat.json();
+            } catch (err) {}
+            console.log(`✅ Đã kết nối json-server thành công tại: ${url}`);
+            break;
+          }
+        } catch (e) {}
+      }
+
+      // Dự phòng nạp trực tiếp từ file local db.json
+      if (!allProds || allProds.length === 0) {
+        try {
+          const resLocal = await fetch("db.json");
+          if (resLocal.ok) {
+            const data = await resLocal.json();
+            allProds = data.products || [];
+            cats = data.categories || [];
+          }
+        } catch (e) {}
+      }
+
+      // Dự phòng lấy từ localStorage hoặc hàm data.js
+      if (!allProds || allProds.length === 0) {
+        allProds = typeof getProducts === "function" ? getProducts() : [];
+        cats = typeof getCategories === "function" ? getCategories() : [];
+      }
+
+      localStorage.setItem("fd_products", JSON.stringify(allProds));
+      if (cats.length) localStorage.setItem("fd_categories", JSON.stringify(cats));
+
+      function getCategoryName(catId) {
+        const found = cats.find(c => c.id === catId);
+        return found ? found.name : "Đồ uống";
+      }
+
+      // 1. Phân loại sản phẩm thành 3 nhóm
+      const bestSellerProds = allProds.filter(p => 
+        p.badge && (p.badge.toLowerCase().includes("bán chạy") || p.badge.toLowerCase().includes("best seller"))
+      );
+
+      const hotProds = allProds.filter(p => 
+        p.badge && (
+          p.badge.toLowerCase().includes("hot") || 
+          p.badge.toLowerCase().includes("đặc biệt") || 
+          p.badge.toLowerCase().includes("yêu thích") || 
+          p.badge.toLowerCase().includes("healthy")
+        )
+      );
+
+      const normalProds = allProds.filter(p => 
+        !bestSellerProds.some(b => b.id === p.id) && !hotProds.some(h => h.id === p.id)
+      );
+
+      // Hàm render thẻ card có CẢ NÚT THÊM GIỎ VÀ MUA NGAY CHUNG 1 HÀNG
+      function createCardHTML(p) {
+        return `
+          <div class="card-item">
+            <div class="card-img-wrap" onclick="location.href='detail.html?id=${p.id}'">
+              <img class="card-img" src="${p.image}" alt="${p.name}">
+              ${p.badge ? `<span class="badge-tag">${p.badge}</span>` : ''}
+            </div>
+            <span class="card-cat">${getCategoryName(p.category)}</span>
+            <a href="detail.html?id=${p.id}" class="card-name" title="${p.name}">${p.name}</a>
+            <p class="card-desc">${p.desc}</p>
+            <div class="card-meta">
+              <span class="card-price">${p.price.toLocaleString('vi-VN')} đ</span>
+              <span class="card-stock">Kho: ${p.quantity} ly</span>
+            </div>
+
+            <!-- Cặp nút Thêm vào giỏ và Mua ngay -->
+            <div class="card-btn-combo">
+              <button class="btn-add-cart" onclick="addToCart(${p.id})" title="Thêm vào giỏ hàng">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+              <button class="btn-buy-now" onclick="buyNow(${p.id})">
+                <i class="fa-solid fa-bolt"></i> Mua Ngay
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      const wrap = document.getElementById("categorySections");
+      if (!wrap) return;
+
+      // 2. Hiển thị 2 phần đầu: Bán chạy và Đang Hot
+      let outputHTML = "";
+      const topSections = [
+        { title: "🔥 Món Bán Chạy Nhất", items: bestSellerProds },
+        { title: "⚡ Đang Hot & Được Yêu Thích", items: hotProds }
+      ];
+
+      topSections.forEach(sec => {
+        if (sec.items && sec.items.length > 0) {
+          outputHTML += `
+            <div style="margin-bottom: 48px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                <h2 class="sec-title" style="border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom:0;">${sec.title}</h2>
+                <a href="products.html" style="color:#b45309; text-decoration:none; font-weight:700; font-size:14px;">Xem tất cả →</a>
+              </div>
+              <div class="product-grid">
+                ${sec.items.map(p => createCardHTML(p)).join('')}
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      // 3. Khung cho phần thứ 3 có phân trang (Pagination)
+      outputHTML += `
+        <div id="pagedSectionBlock" style="margin-bottom: 48px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <h2 class="sec-title" style="border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom:0;">☕ Thức Uống Tiêu Chuẩn Chuẩn Gu</h2>
+            <a href="products.html" style="color:#b45309; text-decoration:none; font-weight:700; font-size:14px;">Xem tất cả →</a>
+          </div>
+          <div class="product-grid" id="pagedProductGrid"></div>
+          <div class="pagination-container" id="paginationControls"></div>
+        </div>
+      `;
+
+      wrap.innerHTML = outputHTML;
+
+      // ==================== LOGIC ĐIỀU KHIỂN PHÂN TRANG ====================
+      const itemsPerPage = 4; // Mỗi trang hiển thị 4 món
+      let currentPage = 1;
+      const totalPages = Math.ceil(normalProds.length / itemsPerPage);
+
+      function renderPagination(page) {
+        currentPage = page;
+        const grid = document.getElementById("pagedProductGrid");
+        const pagination = document.getElementById("paginationControls");
+
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageItems = normalProds.slice(start, end);
+
+        grid.innerHTML = pageItems.map(p => createCardHTML(p)).join('');
+
+        let navHTML = `
+          <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+          navHTML += `
+            <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
+              ${i}
+            </button>
+          `;
+        }
+
+        navHTML += `
+          <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        `;
+
+        pagination.innerHTML = navHTML;
+      }
+
+      window.goToPage = function(page) {
+        if (page < 1 || page > totalPages) return;
+        renderPagination(page);
+        document.getElementById("pagedSectionBlock").scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      if (normalProds.length > 0) {
+        renderPagination(1);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchHomeProducts);
+  </script>
+</body>
+</html>

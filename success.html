@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshDrinks - Đặt Hàng Thành Công</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body style="background:#f8fafc;">
+  <div class="container" style="text-align: center; padding-top: 60px;">
+    <div class="table-box" style="max-width: 520px; margin: auto; padding: 44px 32px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.06);">
+      <div style="width: 80px; height: 80px; background:#dcfce7; color:#16a34a; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:40px; margin-bottom:20px;">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h1 style="font-size: 26px; font-weight:800; color:#0f172a; margin-bottom: 10px;">Đặt Hàng Thành Công!</h1>
+      <p style="color: #64748b; margin-bottom: 24px; font-size:15px;">Cảm ơn bạn đã tin tưởng và thưởng thức đồ uống tại FreshDrinks.</p>
+
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; text-align:left; margin-bottom:28px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="color:#64748b;">Mã đơn hàng:</span>
+          <strong id="outId" style="font-family:monospace; font-size:15px; color:#0f172a;"></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="color:#64748b;">Tổng tiền thanh toán:</span>
+          <strong id="outTotal" style="color:#b45309; font-size:16px;"></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#64748b;">Thời gian nhận dự kiến:</span>
+          <strong style="color:#16a34a;">20 - 30 phút</strong>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <a href="index.html" class="btn-primary" style="padding:12px 24px;">
+          <i class="fa-solid fa-house"></i> Về Trang Chủ
+        </a>
+        <a href="products.html" class="btn-primary" style="background:#e2e8f0; color:#1f2937; padding:12px 24px;">
+          Đặt Thêm Món Khác
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    const p = new URLSearchParams(window.location.search);
+    const orders = typeof getOrders === "function" ? getOrders() : [];
+    const latestOrder = orders.length > 0 ? orders[orders.length - 1] : null;
+
+    // Lấy ID và Tổng tiền từ URL hoặc từ đơn hàng vừa tạo mới nhất
+    const orderId = p.get('orderId') || (latestOrder ? latestOrder.id : "ORD-" + Math.floor(1000 + Math.random() * 9000));
+    const total = p.get('total') ? Number(p.get('total')) : (latestOrder ? latestOrder.total : 0);
+
+    document.getElementById('outId').innerText = orderId;
+    document.getElementById('outTotal').innerText = total > 0 ? total.toLocaleString('vi-VN') + ' đ' : 'Đã xác nhận';
+  </script>
+</body>
+</html>

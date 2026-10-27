@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal - Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <style>
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+    .stat-card {
+      background: #ffffff;
+      border-radius: var(--admin-radius, 14px);
+      padding: 24px;
+      border: 1px solid var(--admin-border, #e2e8f0);
+      box-shadow: var(--admin-shadow, 0 10px 30px -5px rgba(0,0,0,0.06));
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .stat-icon.gold { background: #fef3c7; color: #b45309; }
+    .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+    .stat-icon.green { background: #dcfce7; color: #16a34a; }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h3><i class="fa-solid fa-mug-hot"></i> FreshDrinks</h3>
+      <ul class="admin-nav">
+        <li><a href="index.html" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="categories.html"><i class="fa-solid fa-tags"></i> Quản lý Danh mục</a></li>
+        <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i> Quản lý Sản phẩm</a></li>
+        <li><a href="users.html"><i class="fa-solid fa-users"></i> Khách hàng</a></li>
+        <li><a href="orders.html"><i class="fa-solid fa-receipt"></i> Đơn hàng</a></li>
+        <li><a href="seo.html"><i class="fa-solid fa-magnifying-glass-chart"></i> Cấu hình SEO & FB</a></li>
+        <li><a href="../index.html" style="color:#ef4444; margin-top: auto;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Thoát Admin</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-view-panel">
+      <div class="admin-header-title">
+        <h1><i class="fa-solid fa-chart-pie" style="color:var(--admin-primary-dark, #d97706);"></i> Báo Cáo Kinh Doanh</h1>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon gold"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div>
+            <p style="color:#64748b; font-size:13px; font-weight:600; margin-bottom:4px;">Tổng doanh thu đơn hàng</p>
+            <h3 id="statRev" style="font-size:24px; font-weight:800; color:#0f172a;">0 đ</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fa-solid fa-cart-shopping"></i></div>
+          <div>
+            <p style="color:#64748b; font-size:13px; font-weight:600; margin-bottom:4px;">Số ly đã bán ra</p>
+            <h3 id="statSold" style="font-size:24px; font-weight:800; color:#0f172a;">0 ly</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div>
+            <p style="color:#64748b; font-size:13px; font-weight:600; margin-bottom:4px;">Tổng ly còn trong kho</p>
+            <h3 id="statStock" style="font-size:24px; font-weight:800; color:#0f172a;">0 ly</h3>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #1e293b;"><i class="fa-solid fa-clock-rotate-left"></i> Đơn Hàng Gần Đây</h2>
+        <a href="orders.html" style="color:#b45309; text-decoration:none; font-weight:700; font-size:14px;">Xem toàn bộ đơn →</a>
+      </div>
+
+      <div class="admin-table-card">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Mã Đơn</th>
+              <th>Khách Hàng</th>
+              <th>Thời Gian</th>
+              <th>Tổng Tiền</th>
+              <th>Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody id="dashOrdersBody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script>
+    async function initDashboard() {
+      let orders = [];
+      let products = [];
+
+      try {
+        orders = await apiGetOrders();
+        products = await apiGetProducts();
+      } catch (e) {}
+
+      if (!orders || orders.length === 0) {
+        try {
+          const res = await fetch("../db.json");
+          const data = await res.json();
+          orders = data.orders || [];
+          products = data.products || [];
+        } catch (err) {}
+      }
+
+      const totalRev = orders.reduce((s, o) => s + Number(o.total || 0), 0);
+      const totalSold = orders.reduce((s, o) => s + (o.items ? o.items.reduce((sum, i) => sum + Number(i.qty || 0), 0) : 0), 0);
+      const totalStock = products.reduce((s, p) => s + Number(p.quantity || 0), 0);
+
+      document.getElementById("statRev").innerText = `${totalRev.toLocaleString('vi-VN')} đ`;
+      document.getElementById("statSold").innerText = `${totalSold} ly`;
+      document.getElementById("statStock").innerText = `${totalStock} ly`;
+
+      const tbody = document.getElementById("dashOrdersBody");
+      if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:#64748b;">Chưa có dữ liệu đơn hàng.</td></tr>`;
+      } else {
+        tbody.innerHTML = orders.slice(-5).reverse().map(o => `
+          <tr>
+            <td><strong style="font-family:monospace; color:#0f172a;">${o.id}</strong></td>
+            <td>${o.customer}</td>
+            <td>${o.date || 'Hôm nay'}</td>
+            <td><strong style="color:#b45309;">${Number(o.total).toLocaleString('vi-VN')} đ</strong></td>
+            <td>
+              <span style="background:#fef3c7; color:#b45309; padding:3px 8px; border-radius:99px; font-size:12px; font-weight:700;">
+                ${o.status || 'Đang giao'}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", initDashboard);
+  </script>
+</body>
+</html>

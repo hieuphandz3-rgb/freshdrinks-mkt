@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshDrinks - Tài Khoản</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- TẦNG 1: THANH ĐIỀU HƯỚNG MÀN HÌNH -->
+  <div class="demo-top-bar">
+    <div class="demo-top-container">
+      <div class="demo-nav-group">
+        <span class="demo-title">
+          <i class="fa-solid fa-layer-group"></i> Chọn màn hình:
+        </span>
+        <a href="index.html" class="demo-btn">Trang chủ</a>
+        <a href="products.html" class="demo-btn">Thực đơn & Lọc</a>
+        <a href="login.html" class="demo-btn active">Đăng ký / Đăng nhập</a>
+        <a href="cart.html" class="demo-btn">Giỏ hàng</a>
+        <a href="checkout.html" class="demo-btn">Thanh toán</a>
+      </div>
+      <a href="admin/index.html" class="demo-admin-btn">
+        <i class="fa-solid fa-user-shield"></i> Trang Quản Trị
+      </a>
+    </div>
+  </div>
+
+  <!-- TẦNG 2: HEADER CHÍNH -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fa-solid fa-mug-hot"></i> FreshDrinks</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="products.html">Sản phẩm</a></li>
+        <li><a id="authNavLink" href="login.html" class="active">Tài khoản</a></li>
+      </ul>
+      <a href="cart.html" class="cart-btn">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- FORM AUTH -->
+  <div class="auth-wrapper">
+    <div class="auth-card">
+
+      <!-- KHUNG HIỂN THỊ KHI ĐÃ ĐĂNG NHẬP -->
+      <div id="loggedInBox" style="display: none; text-align: center; padding: 10px 0;">
+        <div style="font-size: 54px; color: var(--primary); margin-bottom: 12px;">
+          <i class="fa-solid fa-circle-user"></i>
+        </div>
+        <h3 id="loggedInUserName" style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 6px;"></h3>
+        <p id="loggedInUserEmail" style="font-size: 14px; color: #64748b; margin-bottom: 24px;"></p>
+
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <a href="index.html" class="demo-btn active" style="padding: 10px 18px; font-size: 14px; border-radius: 8px;">
+            <i class="fa-solid fa-house"></i> Về Trang Chủ
+          </a>
+          <button type="button" onclick="handleLogout()" style="
+            background: #ef4444; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 18px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            font-size: 14px; 
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+          ">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng Xuất
+          </button>
+        </div>
+      </div>
+
+      <!-- CÁC FORM KHI CHƯA ĐĂNG NHẬP -->
+      <div id="authFormsContainer">
+        <div class="auth-nav-tabs" id="tabContainer">
+          <button type="button" class="auth-tab-btn active" id="tabLoginBtn" onclick="switchAuthMode('login')">Đăng Nhập</button>
+          <button type="button" class="auth-tab-btn" id="tabRegisterBtn" onclick="switchAuthMode('register')">Đăng Ký</button>
+        </div>
+
+        <div class="auth-msg-box" id="authAlertBox">
+          <i id="authAlertIcon" class="fa-solid fa-circle-exclamation"></i>
+          <span id="authAlertText">Thông báo</span>
+        </div>
+
+        <!-- 1. FORM ĐĂNG NHẬP -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Email đăng nhập</label>
+            <div class="input-icon-wrap">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="loginEmail" placeholder="Nhập email của bạn..." required autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Mật khẩu</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="loginPassword" placeholder="Nhập mật khẩu..." required />
+              <i class="fa-regular fa-eye toggle-eye" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+            </div>
+          </div>
+
+          <div class="auth-extra-links">
+            <span class="auth-link" onclick="switchAuthMode('forgot')">Quên mật khẩu?</span>
+          </div>
+
+          <button type="submit" class="btn-auth-submit">
+            <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+          </button>
+        </form>
+
+        <!-- 2. FORM ĐĂNG KÝ -->
+        <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label>Họ và tên</label>
+            <div class="input-icon-wrap">
+              <i class="fa-regular fa-user input-icon"></i>
+              <input type="text" id="regName" placeholder="Nhập họ và tên..." required autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Số điện thoại</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-phone input-icon"></i>
+              <input type="tel" id="regPhone" placeholder="Ví dụ: 0905123456" required autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <div class="input-icon-wrap">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="regEmail" placeholder="Nhập email của bạn..." required autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Mật khẩu</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="regPassword" placeholder="Tạo mật khẩu (tối thiểu 6 ký tự)..." required minlength="6" />
+              <i class="fa-regular fa-eye toggle-eye" onclick="togglePasswordVisibility('regPassword', this)"></i>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-auth-submit" style="margin-top: 10px;">
+            <i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản
+          </button>
+        </form>
+
+        <!-- 3. FORM QUÊN MẬT KHẨU -->
+        <form id="forgotForm" style="display: none;" onsubmit="handleForgot(event)">
+          <h3 class="auth-form-title">Khôi Phục Mật Khẩu</h3>
+          <p class="auth-form-desc">Nhập email tài khoản và mật khẩu mới cần thay đổi.</p>
+
+          <div class="form-group">
+            <label>Email đã đăng ký</label>
+            <div class="input-icon-wrap">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="forgotEmail" placeholder="Nhập email tài khoản..." required autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Mật khẩu mới</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="forgotNewPassword" placeholder="Nhập mật khẩu mới..." required minlength="6" />
+              <i class="fa-regular fa-eye toggle-eye" onclick="togglePasswordVisibility('forgotNewPassword', this)"></i>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-auth-submit" style="margin-top: 10px;">
+            <i class="fa-solid fa-key"></i> Đặt Lại Mật Khẩu
+          </button>
+
+          <div style="text-align: center; margin-top: 16px;">
+            <span class="auth-link" onclick="switchAuthMode('login')">← Quay lại Đăng Nhập</span>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>FreshDrinks Artisan</h3>
+        <p>Chuỗi cà phê & trà trái cây giải khát chất lượng cao mang lại nguồn cảm hứng và năng lượng tích cực[cite: 3].</p>
+      </div>
+      <div class="footer-column">
+        <h3>Liên kết nhanh</h3>
+        <a href="index.html">Trang chủ[cite: 3]</a>
+        <a href="products.html">Thực đơn đồ uống[cite: 3]</a>
+        <a href="cart.html">Giỏ hàng của bạn[cite: 3]</a>
+      </div>
+      <div class="footer-column">
+        <h3>Liên hệ</h3>
+        <p>Hotline: 1900 123 456[cite: 3]</p>
+        <p>Email: contact@freshdrinks.com[cite: 3]</p>
+        <p>Địa chỉ: Hải Châu, TP. Đà Nẵng[cite: 3]</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 FreshDrinks Artisan Coffee & Tea. All rights reserved.[cite: 3]</div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function showAuthNotice(type, text) {
+      const box = document.getElementById("authAlertBox");
+      const icon = document.getElementById("authAlertIcon");
+      const msg = document.getElementById("authAlertText");
+
+      box.className = "auth-msg-box " + type;
+      msg.textContent = text;
+      icon.className = type === "success" ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
+      box.style.display = "flex";
+    }
+
+    function clearAuthNotice() {
+      const box = document.getElementById("authAlertBox");
+      if (box) box.style.display = "none";
+    }
+
+    function checkCurrentAuthState() {
+      const currentUser = JSON.parse(localStorage.getItem("fd_currentUser"));
+      const authFormsContainer = document.getElementById("authFormsContainer");
+      const loggedInBox = document.getElementById("loggedInBox");
+
+      if (currentUser) {
+        authFormsContainer.style.display = "none";
+        loggedInBox.style.display = "block";
+        document.getElementById("loggedInUserName").textContent = `Xin chào, ${currentUser.name}!`;
+        document.getElementById("loggedInUserEmail").textContent = currentUser.email;
+      } else {
+        loggedInBox.style.display = "none";
+        authFormsContainer.style.display = "block";
+        switchAuthMode("login");
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Bạn có chắc chắn muốn đăng xuất khỏi tài khoản này?")) {
+        localStorage.removeItem("fd_currentUser");
+        alert("✅ Đăng xuất thành công!");
+        checkCurrentAuthState();
+        if (typeof checkAuthStatus === "function") checkAuthStatus();
+      }
+    }
+
+    function switchAuthMode(mode) {
+      clearAuthNotice();
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const forgotForm = document.getElementById("forgotForm");
+      const tabBox = document.getElementById("tabContainer");
+      const tabLogin = document.getElementById("tabLoginBtn");
+      const tabRegister = document.getElementById("tabRegisterBtn");
+
+      if (mode === "login") {
+        tabBox.style.display = "flex";
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        forgotForm.style.display = "none";
+        tabLogin.classList.add("active");
+        tabRegister.classList.remove("active");
+      } else if (mode === "register") {
+        tabBox.style.display = "flex";
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        forgotForm.style.display = "none";
+        tabLogin.classList.remove("active");
+        tabRegister.classList.add("active");
+      } else if (mode === "forgot") {
+        tabBox.style.display = "none";
+        loginForm.style.display = "none";
+        registerForm.style.display = "none";
+        forgotForm.style.display = "block";
+      }
+    }
+
+    function togglePasswordVisibility(inputId, eyeIcon) {
+      const input = document.getElementById(inputId);
+      if (input.type === "password") {
+        input.type = "text";
+        eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      clearAuthNotice();
+
+      const name = document.getElementById("regName").value.trim();
+      const phone = document.getElementById("regPhone").value.trim();
+      const email = document.getElementById("regEmail").value.trim().toLowerCase();
+      const password = document.getElementById("regPassword").value;
+
+      const users = await apiGetUsers();
+      if (users.some(u => u.email === email)) {
+        showAuthNotice("error", "Email này đã được đăng ký trong db.json!");
+        return;
+      }
+
+      const newUser = {
+        name,
+        phone,
+        email,
+        password,
+        role: "user"
+      };
+
+      await apiRegisterUser(newUser);
+
+      showAuthNotice("success", "Đăng ký thành công và đã lưu vào db.json! Đang chuyển...");
+      document.getElementById("registerForm").reset();
+
+      setTimeout(() => {
+        switchAuthMode("login");
+        document.getElementById("loginEmail").value = email;
+      }, 1200);
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      clearAuthNotice();
+
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
+
+      const users = await apiGetUsers();
+      const matchedUser = users.find(u => u.email === email && u.password === password);
+
+      if (matchedUser) {
+        showAuthNotice("success", `Đăng nhập thành công! Xin chào ${matchedUser.name}...`);
+        localStorage.setItem("fd_currentUser", JSON.stringify(matchedUser));
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
+      } else {
+        showAuthNotice("error", "Đăng nhập thất bại! Email hoặc mật khẩu không chính xác.");
+      }
+    }
+
+    async function handleForgot(e) {
+      e.preventDefault();
+      clearAuthNotice();
+
+      const email = document.getElementById("forgotEmail").value.trim().toLowerCase();
+      const newPassword = document.getElementById("forgotNewPassword").value;
+
+      const users = await apiGetUsers();
+      const user = users.find(u => u.email === email);
+
+      if (user) {
+        user.password = newPassword;
+        await apiUpdateUserPassword(user.id, user);
+
+        showAuthNotice("success", "Đổi mật khẩu thành công và đã cập nhật vào db.json!");
+        document.getElementById("forgotForm").reset();
+
+        setTimeout(() => {
+          switchAuthMode("login");
+          document.getElementById("loginEmail").value = email;
+        }, 1500);
+      } else {
+        showAuthNotice("error", "Email không tồn tại trong hệ thống db.json!");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", checkCurrentAuthState);
+  </script>
+</body>
+</html>
