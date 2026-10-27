@@ -21,7 +21,7 @@
   <link rel="canonical" href="https://freshdrinks.vn/" />
 
   <!-- Google Search Console verification -->
-  <meta name="google-site-verification" content="Abc123XyZ456FreshDrinksToken2026" />
+  <meta name="google-site-verification" content="JSGPPKwXbe9HbeAJMpxfA1a65Md16_gSWvtwLyFTceg" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
@@ -191,7 +191,6 @@
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
   <script>
-    // Hàm Mua Ngay: Thêm món vào giỏ rồi chuyển thẳng sang trang thanh toán checkout.html
     function buyNow(productId, qty = 1) {
       const products = typeof getProducts === "function" ? getProducts() : [];
       const product = products.find(p => p.id == productId);
@@ -225,7 +224,6 @@
       let allProds = [];
       let cats = [];
 
-      // Ưu tiên nạp từ json-server (cổng 3001 hoặc 3000)
       const endpoints = ["http://localhost:3001", "http://localhost:3000"];
       for (const url of endpoints) {
         try {
@@ -242,7 +240,6 @@
         } catch (e) {}
       }
 
-      // Dự phòng nạp trực tiếp từ file local db.json
       if (!allProds || allProds.length === 0) {
         try {
           const resLocal = await fetch("db.json");
@@ -254,7 +251,6 @@
         } catch (e) {}
       }
 
-      // Dự phòng lấy từ localStorage hoặc hàm data.js
       if (!allProds || allProds.length === 0) {
         allProds = typeof getProducts === "function" ? getProducts() : [];
         cats = typeof getCategories === "function" ? getCategories() : [];
@@ -268,7 +264,6 @@
         return found ? found.name : "Đồ uống";
       }
 
-      // 1. Phân loại sản phẩm thành 3 nhóm
       const bestSellerProds = allProds.filter(p => 
         p.badge && (p.badge.toLowerCase().includes("bán chạy") || p.badge.toLowerCase().includes("best seller"))
       );
@@ -286,7 +281,6 @@
         !bestSellerProds.some(b => b.id === p.id) && !hotProds.some(h => h.id === p.id)
       );
 
-      // Hàm render thẻ card có CẢ NÚT THÊM GIỎ VÀ MUA NGAY CHUNG 1 HÀNG
       function createCardHTML(p) {
         return `
           <div class="card-item">
@@ -302,7 +296,6 @@
               <span class="card-stock">Kho: ${p.quantity} ly</span>
             </div>
 
-            <!-- Cặp nút Thêm vào giỏ và Mua ngay -->
             <div class="card-btn-combo">
               <button class="btn-add-cart" onclick="addToCart(${p.id})" title="Thêm vào giỏ hàng">
                 <i class="fa-solid fa-cart-plus"></i>
@@ -318,7 +311,6 @@
       const wrap = document.getElementById("categorySections");
       if (!wrap) return;
 
-      // 2. Hiển thị 2 phần đầu: Bán chạy và Đang Hot
       let outputHTML = "";
       const topSections = [
         { title: "🔥 Món Bán Chạy Nhất", items: bestSellerProds },
@@ -341,7 +333,6 @@
         }
       });
 
-      // 3. Khung cho phần thứ 3 có phân trang (Pagination)
       outputHTML += `
         <div id="pagedSectionBlock" style="margin-bottom: 48px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
@@ -355,8 +346,7 @@
 
       wrap.innerHTML = outputHTML;
 
-      // ==================== LOGIC ĐIỀU KHIỂN PHÂN TRANG ====================
-      const itemsPerPage = 4; // Mỗi trang hiển thị 4 món
+      const itemsPerPage = 4;
       let currentPage = 1;
       const totalPages = Math.ceil(normalProds.length / itemsPerPage);
 
